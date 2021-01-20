@@ -1,7 +1,6 @@
 <template>
   <el-dialog :title="userForm.userId?`修改用户`:`新增用户`"
              :visible.sync="dialogFormVisible"
-             :close-on-click-modal="false"
              :append-to-body="true">
 
     <el-form ref="userForm" :model="userForm"
@@ -154,7 +153,6 @@
                 //刷新列表
                 this.$emit('refreshList')
               }else{
-                this.dialogFormVisible = true;
                 this.$message.error('添加失败')
               }
             })
@@ -170,7 +168,6 @@
                 this.$emit('refreshList');
                 this.$message.success('修改成功')
               }else{
-                this.dialogFormVisible = true;
                 this.$message.error('修改失败')
               }
             })

@@ -39,6 +39,7 @@
         :data="tableData"
         :stripe="true"
         border
+        size="medium"
         @selection-change="handleSelectionChange"
         style="width: 100%"
       >
@@ -89,14 +90,16 @@
         >
           <template slot-scope="scope">
             <el-button
-              type="text"
-              size="small"
+              type="info"
+              size="mini"
+              round
               @click="addOrUpdate(scope.row.userId)"
               >修改</el-button
             >
             <el-button
-              type="text"
-              size="small"
+              type="danger"
+              size="mini"
+              round
               @click="del(scope.row.userId)"
               >删除</el-button
             >

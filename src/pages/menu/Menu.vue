@@ -1,43 +1,57 @@
 <template>
   <div class="menu-area">
-    <div class="add-form">
-      <el-button type="primary" @click="addOrUpdate(null,'add')" v-if="Auth('menu:add')">添加</el-button>
+    <div class="search-form">
+      <el-form
+        :model="menuForm"
+        :inline="true"
+        ref="menuForm"
+        label-width="100px"
+        class="demo-form-inline"
+      >
+        <el-form-item label="名称" prop="menuName">
+          <el-input v-model="menuForm.menuName"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="success" >查询</el-button>
+          <el-button type="primary" @click="addOrUpdate('','add')">添加</el-button>
+        </el-form-item>
+      </el-form>
     </div>
     <div class="container-table">
       <!--菜单列表-->
       <el-table
         :data="dataList"
-        row-key="menuId"
+        size="medium"
+        row-key="id"
         v-loading="loading"
         border
-        :tree-props="{children: 'childs', hasChildren: 'hasChildren'}"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         style="width: 100%; ">
-        <el-table-column prop="name" header-align="center" min-width="150" label="名称"></el-table-column>
-        <el-table-column prop="icon" header-align="center" align="center" label="图标">
+        <el-table-column prop="name" header-align="center" min-width="100" label="名称"></el-table-column>
+        <el-table-column prop="icon" header-align="center" min-width="100" align="center" label="图标">
           <template slot-scope="scope">
             <i :class="scope.row.icon"></i>
           </template>
         </el-table-column>
-        <el-table-column prop="type" header-align="center" align="center" label="类型">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.type === '0'" size="small">目录</el-tag>
-            <el-tag v-else-if="scope.row.type === '1'" size="small" type="success">菜单</el-tag>
-            <el-tag v-else-if="scope.row.type === '2'" size="small" type="info">按钮</el-tag>
+        <el-table-column prop="nodeData" header-align="center" min-width="100" align="center" label="排序号">
+           <template slot-scope="scope">
+            <i :class="scope.row.orderNum"></i>
           </template>
         </el-table-column>
-        <el-table-column prop="orderNum" header-align="center" align="center" label="排序号"></el-table-column>
-        <el-table-column prop="url" header-align="center" align="center" width="150" :show-overflow-tooltip="true" label="菜单URL"></el-table-column>
-        <el-table-column prop="perms" header-align="center" align="center" width="150" :show-overflow-tooltip="true" label="授权标识"></el-table-column>
-        <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
+        <el-table-column prop="url" header-align="center" align="center" min-width="100" :show-overflow-tooltip="true" label="菜单URL"></el-table-column>
+        <el-table-column fixed="right" header-align="center" align="center" min-width="120" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="addOrUpdate(scope.row.menuId,'add')" v-if="Auth('menu:add')">添加</el-button>
-            <el-button type="text" size="small" @click="addOrUpdate(scope.row.menuId,'edit')" v-if="Auth('menu:edit')">修改</el-button>
-            <el-button type="text" size="small" @click="deleteHandle(scope.row.menuId)" v-if="Auth('menu:del')">删除</el-button>
+            <el-button type="primary" size="mini" @click="addOrUpdate(scope.row.id,'add')" >添加</el-button>
+            <el-button type="info" size="mini" @click="addOrUpdate(scope.row.id,'edit')" >修改</el-button>
+            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <menu-add-or-update v-if="showDialog" ref="menuAddOrUpdate" @refreshMenuList="getMenuList"></menu-add-or-update>
+    <menu-add-or-update
+     v-if="showDialog" 
+     ref="menuAddOrUpdate" 
+     @refreshMenuList="getMenuList"/>
   </div>
 </template>
 
@@ -45,7 +59,7 @@
 
   import MenuAddOrUpdate from "./MenuAddOrUpdate";
 
-  import {getTreeMenu,deleteMenu} from "@api/sys/menu";
+  import {queryTreeMenu,delMenu} from "@api/sys/menu";
 
   export default {
     name: "Menu",
@@ -54,20 +68,25 @@
         dataList: [],
         loading:false,
         showDialog: false,
+        menuForm: {
+          menuName: "",
+        },
       }
     },
     components:{
       MenuAddOrUpdate,
     },
     created() {
-      // this.loading = true;
-      // this.getMenuList();
+      this.loading = true;
+
+      this.getMenuList();
     },
     methods: {
       getMenuList(){
-        getTreeMenu().then(res => {
+        let userId = this.$store.state.user.userId;
+        queryTreeMenu(userId).then(res => {
           if (res.code === 200) {
-            this.dataList = res.datas;
+            this.dataList = res.data;
           }
           this.loading = false;
         })
@@ -103,10 +122,11 @@
 
 <style scoped>
   .container-table {
-    margin-left: 20px;
-    margin-bottom: 0;
+    
   }
-
+  .search-form{
+    float: left;
+  }
   .add-form {
     margin-left: 20px;
     padding: 5px;

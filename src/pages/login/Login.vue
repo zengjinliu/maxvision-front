@@ -2,7 +2,9 @@
   <div class="login-container">
     <div class="login-area">
       <div class="login-head">
-        <div class="login-logo"></div>
+        <div class="login-logo">
+           <img src="../../assert/img/sys/logo.png">
+        </div>
       </div>
       <el-form
         class="login-form"
@@ -22,7 +24,7 @@
             placeholder="密码"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item prop="password" class="remember">
           <el-checkbox>remember me</el-checkbox>
         </el-form-item>
         <el-form-item>
@@ -110,7 +112,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: url("~@/assert/img/login_bj.jpg") no-repeat;
+    background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;
     background-size: cover; 
   }
   .login-area{
@@ -121,12 +123,15 @@
     display: flex;
     justify-content: center;
   }
-  /*.login-logo{*/
-  /*  width: 200px;*/
-  /*  height: 75px;*/
-  /*  background: url("~@/assert/img/login_bg.jpg") no-repeat;;*/
-  /*  background-size: contain;*/
-  /*}*/
+  .login-logo{
+    background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;;
+    background-size: contain;
+  }
+  .login-logo img{
+    display: block;
+	  margin: auto;
+	  height: 45px;
+  }
   .login-form {
     background-color: #ffffff;
     padding: 50px 50px 10px 50px;
@@ -135,6 +140,9 @@
   }
   .login-btn{
     width: 100%;
+  }
+  .remember{
+    float: left;
   }
 </style>
 

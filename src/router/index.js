@@ -8,6 +8,10 @@ Vue.use(VueRouter)
 
 let routes = [
   {
+    path: '/',
+    redirect: '/login'
+  },
+  {
     path: '/login',
     component: resolve => require(['@views/login/Login'], resolve),
   },

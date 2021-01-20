@@ -14,7 +14,11 @@ export const api = {
     queryCurrentUserPerms:'/api/sys/user/queryAllPerms',
   },
   menu:{
-    getSideMenus:'/api/sys/menu/getNavList'
+    queryTreeMenu:'/api/sys/menu/queryTreeMenu',//根据用户id查询所有菜单
+    queryByMenuId:'/api/sys/menu/id',
+    updateMenu:'/api/sys/menu/update',
+    delMenu:'/api/sys/menu/del',
+    addMenu:'/api/sys/menu/add'
   }
 
 }

@@ -41,7 +41,7 @@
 
 <script>
 
-  import {getTreeMenu} from "@api/sys/menu";
+  import {queryTreeMenu} from "@api/sys/menu";
   import {addRole, queryById, update} from "@api/sys/role";
 
   export default {
