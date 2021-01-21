@@ -49,7 +49,7 @@
 
 <script>
   import {checkNameExist,add,update,queryUserById} from "@api/sys/user";
-  import {getAllRoles} from "@api/sys/role";
+  import {queryAllRole} from "@api/sys/role";
   import SingleUpload from "@views/upload/SingleUpload";
 
   export default {

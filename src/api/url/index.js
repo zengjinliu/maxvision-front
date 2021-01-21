@@ -14,11 +14,19 @@ export const api = {
     queryCurrentUserPerms:'/api/sys/user/queryAllPerms',
   },
   menu:{
-    queryTreeMenu:'/api/sys/menu/queryTreeMenu',//根据用户id查询所有菜单
-    queryByMenuId:'/api/sys/menu/id',
-    updateMenu:'/api/sys/menu/update',
-    delMenu:'/api/sys/menu/del',
-    addMenu:'/api/sys/menu/add'
+    queryTreeMenu:'/api/sys/menu/queryTreeMenu',//根据用户id查询所有树形菜单
+    queryByMenuId:'/api/sys/menu/id',//根据主键查询菜单
+    updateMenu:'/api/sys/menu/update',//修改菜单
+    delMenu:'/api/sys/menu/del',//删除菜单
+    addMenu:'/api/sys/menu/add'//新增菜单
+  },
+  role: {
+    rolePage:'/api/sys/role/page',//分页查询角色
+    addRole:'/api/sys/role/add',//新增角色
+    delRole:'/api/sys/role/del',//删除角色
+    updateRole:'/api/sys/role/update',//修改角色
+    queryByRoleId:'/api/sys/role/id',//根据角色id查询
+    queryAllRole:'/api/sys/role/queryAllRole'//查询所有角色
   }
 
 }

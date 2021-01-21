@@ -13,22 +13,14 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSearch">查询</el-button>
-          <el-button
-            type="success"
-            @click="addOrUpdate()"
-            >添加</el-button
-          >
+          <el-button type="success" @click="addOrUpdate()">添加</el-button>
           <el-button
             type="danger"
             @click="del()"
             :disabled="userIds.length <= 0"
             >批量删除</el-button
           >
-          <el-button
-            type="info"
-            @click="exportUserList()"
-            >导出</el-button
-          >
+          <el-button type="info" @click="exportUserList()">导出</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -43,9 +35,7 @@
         @selection-change="handleSelectionChange"
         style="width: 100%"
       >
-        <el-table-column type="selection" width="55">
-
-        </el-table-column>
+        <el-table-column type="selection"  align="center" width="55"> </el-table-column>
         <el-table-column
           prop="userName"
           label="姓名"
@@ -94,15 +84,13 @@
               size="mini"
               round
               @click="addOrUpdate(scope.row.userId)"
-              >修改</el-button
-            >
+              >修改</el-button>
             <el-button
               type="danger"
               size="mini"
               round
               @click="del(scope.row.userId)"
-              >删除</el-button
-            >
+              >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -125,15 +113,15 @@
       v-if="showAddOrUpdate"
       ref="userAddOrUpdate"
       @refreshList="page"
-   />
+    />
   </div>
 </template>
 
 <script>
-import UserAddOrUpdate from './UserAddOrUpdate';
+import UserAddOrUpdate from "./UserAddOrUpdate";
 
-import { getUserPage, delUser} from '@api/sys/user';
-import {exportExcel} from '@comm/download'
+import { getUserPage, delUser } from "@api/sys/user";
+import { exportExcel } from "@comm/download";
 
 export default {
   name: "User",
@@ -150,7 +138,6 @@ export default {
       total: 0, //总共多少条
       tableData: [],
       showAddOrUpdate: false, //是否展示添加或者修改页
-      userId: "",
     };
   },
   components: {
@@ -178,7 +165,9 @@ export default {
     },
     del(userId) {
       //类似Java中的map方法
-      let userIds = userId ? [userId] : this.userIds.map((item) => {
+      let userIds = userId
+        ? [userId]
+        : this.userIds.map((item) => {
             return item.userId;
           });
       //删除单个用户
@@ -186,8 +175,10 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
-        delUser(userIds).then((res) => {
+      })
+        .then(() => {
+          delUser(userIds)
+            .then((res) => {
               if (res.code === 200) {
                 this.$message.success("删除成功");
                 this.page();
@@ -221,7 +212,7 @@ export default {
     },
     exportUserList() {
       //导出 excel
-      exportExcel('/user/export','用户列表');
+      exportExcel("/user/export", "用户列表");
     },
   },
 };
@@ -229,10 +220,9 @@ export default {
 
 <style scoped>
 .container-table {
-
 }
 
 .search-form {
- float:left;
+  float: left;
 }
 </style>

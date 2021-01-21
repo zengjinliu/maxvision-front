@@ -2,13 +2,13 @@
   <div class="role-area">
     <div class="search-form">
       <el-form :model="roleForm" :inline="true" ref="roleForm"  label-width="100px" class="demo-form-inline">
-        <el-form-item label="角色名称" prop="username">
+        <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="roleForm.roleName"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSearch">查询</el-button>
-          <el-button type="success" @click="addOrUpdate()" v-if="Auth('role:add')">添加</el-button>
-          <el-button type="danger" @click="del()" :disabled="roleIds.length <=0" v-if="Auth('role:del')">批量删除</el-button>
+          <el-button type="success" @click="addOrUpdate()" >添加</el-button>
+          <el-button type="danger" @click="del()" :disabled="roleIds.length <=0" >批量删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -32,8 +32,8 @@
           width="150"
           label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="addOrUpdate(scope.row.roleId)" v-if="Auth('role:edit')">修改</el-button>
-            <el-button type="text" size="small" @click="del(scope.row.roleId)" v-if="Auth('role:del')">删除</el-button>
+            <el-button type="text" size="small" @click="addOrUpdate(scope.row.roleId)" >修改</el-button>
+            <el-button type="text" size="small" @click="del(scope.row.roleId)" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -57,7 +57,7 @@
 <script>
   import RoleAddOrUpdate from "./RoleAddOrUpdate";
 
-  import {getRolePage,delRole} from "@api/sys/role";
+  import {queryRolePage,delRole} from "@api/sys/role";
 
   export default {
     name: "Role",
@@ -88,10 +88,10 @@
     methods: {
       page() {
         //分页
-        getRolePage(this.roleForm).then(res => {
-          if (res.datas) {
-            this.total = res.pageModel.total;
-            this.tableData = res.datas;
+        queryRolePage(this.roleForm).then(res => {
+          if (res.data) {
+            this.total = res.total;
+            this.tableData = res.data;
           }
           this.loading = false;
         })
@@ -148,12 +148,10 @@
 
 <style scoped>
   .container-table {
-    margin-left: 20px;
-    margin-bottom: 0;
+  
   }
 
   .search-form {
-    margin-left: 0;
-    margin-top: 20px;
+    float: left;
   }
 </style>

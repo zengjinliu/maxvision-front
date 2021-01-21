@@ -42,7 +42,7 @@
 <script>
 
   import {queryTreeMenu} from "@api/sys/menu";
-  import {addRole, queryById, update} from "@api/sys/role";
+  import {addRole, queryByRoleId, updateRole} from "@api/sys/role";
 
   export default {
     name: "RoleAddOrUpdate",
@@ -72,9 +72,10 @@
     },
     created() {
       //获取整个菜单树
-      getTreeMenu().then(res => {
+      let userId = this.$store.state.user.userId;
+      queryTreeMenu(userId).then(res => {
         if (res.code === 200) {
-          this.treeData = res.datas;
+          this.treeData = res.data;
         }
       })
     },
@@ -84,18 +85,15 @@
         //修改信息回显
         if (roleId != undefined) {
           this.roleForm.roleId = roleId;
-          queryById(roleId).then(res => {
+          queryByRoleId(roleId).then(res => {
             if (res.code === 200) {
-              this.roleForm.roleName = res.datas.roleName;
-              this.roleForm.remark = res.datas.remark;
+              this.roleForm.roleName = res.data.roleName;
+              this.roleForm.remark = res.data.remark;
               let that = this;
               this.checkStrictly = true;
               this.$nextTick(() => {
                 setTimeout(()=>{
                   that.$refs.menuTree.setCheckedKeys(res.datas.menuIds);
-                  // res.datas.menuIds.forEach(e => {
-                  //   that.$refs.menuTree.setChecked(e, true, false);
-                  // })
                   this.checkStrictly = false
                 },10)
               })
@@ -116,7 +114,7 @@
           //修改
           this.$refs['roleForm'].validate((valid) => {
             if (valid) {
-              update(this.roleForm).then(res => {
+              updateRole(this.roleForm).then(res => {
                 if (res.code === 200) {
                   this.dialogShow = false;
                   this.$message.success('修改成功')
