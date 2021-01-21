@@ -33,17 +33,14 @@
             <i :class="scope.row.icon"></i>
           </template>
         </el-table-column>
-        <el-table-column prop="nodeData" header-align="center" min-width="100" align="center" label="排序号">
-           <template slot-scope="scope">
-            <i :class="scope.row.orderNum"></i>
-          </template>
+        <el-table-column prop="orderNum" header-align="center" min-width="100" align="center" label="排序号">
         </el-table-column>
         <el-table-column prop="url" header-align="center" align="center" min-width="100" :show-overflow-tooltip="true" label="菜单URL"></el-table-column>
         <el-table-column fixed="right" header-align="center" align="center" min-width="120" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="addOrUpdate(scope.row.id,'add')" >添加</el-button>
             <el-button type="info" size="mini" @click="addOrUpdate(scope.row.id,'edit')" >修改</el-button>
-            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)" >删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteHandle(scope.row)" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,7 +49,10 @@
      v-if="showDialog" 
      ref="menuAddOrUpdate" 
      @refreshMenuList="getMenuList"/>
+     
   </div>
+
+  
 </template>
 
 <script>
@@ -78,7 +78,6 @@
     },
     created() {
       this.loading = true;
-
       this.getMenuList();
     },
     methods: {
@@ -98,23 +97,26 @@
           this.$refs['menuAddOrUpdate'].init(menuId,opt);
         })
       },
-      deleteHandle(menuId) {
+      deleteHandle(row) {
         //删除
         this.$confirm('确定进行删除操作,是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(()=>{
-          deleteMenu(menuId).then(res =>{
-            if(res.code ===200){
-              this.$message.success('删除成功')
-              this.getMenuList();
-            } else{
-              this.$message.error(res.msg);
-            }
-          })
-        })
-
+          if(row.children.length>0){
+            this.$message.error('存在子菜单,不允许删除');
+          } else{
+            delMenu(row.id).then(res =>{
+              if(res.code ===200){
+                this.$message.success('删除成功')
+                this.getMenuList();
+              } else{
+                this.$message.error('删除失败');
+              }
+            })
+          }
+        }).catch(cancel=>{})
       }
     },
   }
