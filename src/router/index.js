@@ -13,7 +13,7 @@ let routes = [
   },
   {
     path: '/login',
-    component: resolve => require(['@views/login/Login'], resolve),
+    component: resolve => require(['@views/sys/login/Login'], resolve),
   },
   {
     path: '/home',
@@ -28,20 +28,20 @@ let routes = [
         component: resolve => require(['@views/common/HomeIndex'], resolve),
       },
       {
-        path: '/test',
-        component: resolve => require(['@views/common/Test'], resolve),
-      },
-      {
         path: '/user',
-        component: resolve => require(['@views/user/User'], resolve),
+        component: resolve => require(['@views/sys/user/User'], resolve),
       },
       {
         path: '/role',
-        component: resolve => require(['@views/role/Role'], resolve),
+        component: resolve => require(['@views/sys/role/Role'], resolve),
       },
       {
         path: '/menu',
-        component: resolve => require(['@views/menu/Menu'], resolve),
+        component: resolve => require(['@views/sys/menu/Menu'], resolve),
+      },
+      {
+        path: '/dept',
+        component: resolve => require(['@views/sys/dept/Dept'], resolve),
       },
       {
         path: '/echart',
@@ -54,20 +54,37 @@ let routes = [
 
 
 
-const files = require.context('@views', true, /router\.js$/);
+// const files = require.context('@views', true, /router\.js$/);
 
-routes.push({
-  path: '/',
-  redirect: '/home'
-});
+// routes.push({
+//   path: '/',
+//   redirect: '/home'
+// });
 
-files.keys().forEach(key => {
-  routes = routes.concat(files(key).default);
-});
+// files.keys().forEach(key => {
+//   routes = routes.concat(files(key).default);
+// });
 
 const router = new VueRouter({
   routes: routes,
   mode: 'history'
+});
+
+
+//路由导航守卫
+router.beforeEach((to, from ,next)=>{
+  if(to.path!="/login"){
+    //校验
+    const user = sessionStorage.getItem('user');
+    if(user){
+      next();
+    } else {
+      next('/login');
+    }
+  }else{
+    next();
+  }
+
 });
 
 export default router

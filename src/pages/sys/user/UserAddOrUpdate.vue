@@ -16,6 +16,18 @@
       <el-form-item label="密码" prop="password">
         <el-input v-model="userForm.password" type="password"></el-input>
       </el-form-item>
+      <el-form-item label="角色" prop="roleId">
+        <el-select v-model="userForm.roleId" placeholder="请选择"
+                   multiple size="medium" filterable clearable
+        >
+        <el-option
+          v-for="item in roleList"
+          :key="item.roleId"
+          :label="item.roleName"
+          :value="item.roleId">
+        </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="userForm.email"></el-input>
       </el-form-item>
@@ -25,20 +37,7 @@
       <el-form-item label="头像" prop="pic">
         <single-upload v-model="userForm.pic"></single-upload>
       </el-form-item>
-      <el-form-item label="角色" prop="roleId">
-        <el-select v-model="userForm.roleId" placeholder="请选择"
-                   multiple size="medium" filterable clearable
-        >
-          <el-option label="admin" value="1"></el-option>
-          <el-option label="test" value="2"></el-option>
-<!--          <el-option-->
-<!--            v-for="item in roleList"-->
-<!--            :key="item.roleId"-->
-<!--            :label="item.roleName"-->
-<!--            :value="item.roleId">-->
-<!--          </el-option>-->
-        </el-select>
-      </el-form-item>
+  
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -63,7 +62,7 @@
           callback();
         }else{
           checkNameExist(value).then(res=>{
-            if(res.datas){
+            if(res.data){
               callback(new Error('该账户已存在已存在'));
             }else{
               callback();
@@ -85,6 +84,7 @@
           roleId: '',
           userId:''
         },
+        roleList:[],
         userFormRule: {
           loginName: [
             {required: true, message: '用户名不能为空', trigger: 'blur'},
@@ -102,11 +102,11 @@
     },
     created() {
       //获取所有的角色
-      // getAllRoles().then(res => {
-      //   if(res.code===200){
-      //     this.roleList = res.datas;
-      //   }
-      // })
+      queryAllRole().then(res => {
+        if(res.code===200){
+          this.roleList = res.data;
+        }
+      })
     },
     methods: {
       init(userId) {
@@ -117,11 +117,16 @@
           //数据回显
           queryUserById(userId).then(res =>{
             if(res.code===200){
-              this.userForm.username = res.datas.username;
-              this.userForm.password = res.datas.password;
-              this.userForm.confirmPwd = res.datas.password;
-              this.userForm.pic = res.datas.pic;
-              this.userForm.phone = res.datas.phone;
+              console.log(res);
+              this.userForm.userName = res.data.userName;
+              this.userForm.password = res.data.password;
+              this.userForm.loginName = res.data.loginName;
+              this.userForm.email = res.data.email;
+              this.userForm.phonenumber = res.data.phonenumber;
+              this.userForm.pic = res.data.pic;
+              this.userForm.deptId = res.data.deptId;
+              this.userForm.postId = res.data.postId;
+              this.userForm.roleId = res.data.roleId;
             }
           })
         }else {
@@ -131,7 +136,7 @@
         }
       },
       doAddOrUpdateUser(){
-        //TODO 图片采用fastDFS
+        //TODO 图片采用存储到本地
         if(this.userForm.userId){
           //修改
           this.updateUser();

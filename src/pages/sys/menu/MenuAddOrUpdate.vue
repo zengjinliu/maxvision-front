@@ -37,14 +37,13 @@
       <el-form-item label="上级菜单" prop="parentName">
         <el-input
           v-model="dataForm.parentName"
-          v-popover:menuListPopover
           :readonly="true"
         ></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="showDialog = false">取消</el-button>
-      <el-button type="primary" @click="addOrUpdateMenu">确定</el-button>
+      <el-button type="primary" @click="addOrUpdateMenu()">确定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -76,7 +75,6 @@ export default {
       },
       showDialog: false, //控制dialog显示
       opt: "", //操作（是新增还是修改）
-      disabled: false,
       iconList: [], //图标列表
     };
   },
@@ -155,8 +153,6 @@ export default {
           this.dataForm.orderNum = current.orderNum;
           this.dataForm.perms = current.perms;
           this.dataForm.url = current.url;
-          //下拉值回显
-          this.dataForm.type = current.type + "";
         }
       });
     },

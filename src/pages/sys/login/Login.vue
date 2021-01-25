@@ -3,7 +3,7 @@
     <div class="login-area">
       <div class="login-head">
         <div class="login-logo">
-           <img src="../../assert/img/sys/logo.png">
+           <img src="../../../assert/img/sys/logo.png">
         </div>
       </div>
       <el-form
@@ -75,6 +75,7 @@
                   userId: res.data.userId,
                 };
                 this.$store.dispatch("saveUserInfo", user);
+                sessionStorage.setItem('user',user);
                 this.$router.replace("/home");
                 //登陆成功后将权限信息保存
                 // this.getAllPerms();
@@ -124,7 +125,7 @@
     justify-content: center;
   }
   .login-logo{
-    background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;;
+    background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;
     background-size: contain;
   }
   .login-logo img{

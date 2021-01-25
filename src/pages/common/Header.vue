@@ -1,34 +1,4 @@
 <template>
-<!--  <div class="header">-->
-<!--    &lt;!&ndash;标题&ndash;&gt;-->
-<!--    <div class="logo">智能调度平台</div>-->
-<!--    <div class="tools">-->
-<!--      <div class="collapse-btn" @click="handleCollapse">-->
-<!--        <i class="el-icon-menu"></i>-->
-<!--      </div>-->
-<!--      <div class="fullscreen-btn" @click="handleFullScreen">-->
-<!--        <el-tooltip :content="fullScreen?`取消全屏`:`全屏`" placement="bottom">-->
-<!--          <i class="el-icon-rank"></i>-->
-<!--        </el-tooltip>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="header-right">-->
-<!--      <div class="user-avator">-->
-<!--        <img :src="pic">-->
-<!--      </div>-->
-<!--      <el-dropdown class="user-name">-->
-<!--        <span class="el-dropdown-link">-->
-<!--          {{username}}-->
-<!--          <i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
-<!--        </span>-->
-<!--        <el-dropdown-menu slot="dropdown">-->
-<!--          <el-dropdown-item @click.native="handleModifyPwd">修改密码</el-dropdown-item>-->
-<!--          <el-dropdown-item @click.native="logout">退出</el-dropdown-item>-->
-<!--        </el-dropdown-menu>-->
-<!--      </el-dropdown>-->
-<!--    </div>-->
-<!--    <update-password v-if="modifyPwd" ref="updatePwd"></update-password>-->
-<!--  </div>-->
         <el-header class="header">
           <div>
             <i
@@ -38,7 +8,7 @@
               }"
               @click="handleCollapse"
             ></i>
-            <span>江苏传智播客科技教育有限公司</span>
+            <span>审讯平台</span>
           </div>
           <el-dropdown>
             <div class="avatar-wrap">

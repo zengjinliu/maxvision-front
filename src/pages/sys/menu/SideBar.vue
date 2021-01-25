@@ -41,11 +41,6 @@
         menus: []
       }
     },
-    computed: {
-      onRoutes() {
-        return this.$route.path.replace('/', '');
-      }
-    },
     created() {
       //请求菜单
       this.requireItems();
@@ -59,9 +54,6 @@
           }
         })
       },
-      go(url) {
-        this.$router.push(url);
-      }
     }
   }
 </script>

@@ -40,14 +40,12 @@
           prop="userName"
           label="姓名"
           width="180"
-          header-align="center"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="pic"
           label="图片"
           width="180"
-          header-align="center"
           align="center"
         >
           <template slot-scope="scope">
@@ -62,18 +60,15 @@
           prop="phonenumber"
           label="电话"
           width="180"
-          header-align="center"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="createTime"
           label="日期"
-          header-align="center"
           align="center"
         ></el-table-column>
         <el-table-column
           fixed="right"
-          header-align="center"
           align="center"
           width="150"
           label="操作"
@@ -82,13 +77,11 @@
             <el-button
               type="info"
               size="mini"
-              round
               @click="addOrUpdate(scope.row.userId)"
               >修改</el-button>
             <el-button
               type="danger"
               size="mini"
-              round
               @click="del(scope.row.userId)"
               >删除</el-button>
           </template>
@@ -165,9 +158,7 @@ export default {
     },
     del(userId) {
       //类似Java中的map方法
-      let userIds = userId
-        ? [userId]
-        : this.userIds.map((item) => {
+      let userIds = userId? [userId]: this.userIds.map((item) => {
             return item.userId;
           });
       //删除单个用户
@@ -204,6 +195,7 @@ export default {
       this.page();
     },
     addOrUpdate(userId) {
+      console.log(userId);
       //修改
       this.showAddOrUpdate = true;
       this.$nextTick(() => {

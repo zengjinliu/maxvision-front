@@ -1,15 +1,16 @@
+<!--  -->
 <template>
   <div class="menu-area">
     <div class="search-form">
       <el-form
-        :model="menuForm"
+        :model="deptForm"
         :inline="true"
-        ref="menuForm"
+        ref="deptForm"
         label-width="100px"
         class="demo-form-inline"
       >
-        <el-form-item label="名称" prop="menuName">
-          <el-input v-model="menuForm.menuName"></el-input>
+        <el-form-item label="部门名称" prop="deptName">
+          <el-input v-model="deptForm.deptName"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="success" >查询</el-button>
@@ -18,83 +19,74 @@
       </el-form>
     </div>
     <div class="container-table">
-      <!--菜单列表-->
+      <!--部门列表-->
       <el-table
-        :data="dataList"
+        :data="deptList"
         size="medium"
         row-key="id"
         v-loading="loading"
         border
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         style="width: 100%; ">
-        <el-table-column prop="name" header-align="center" min-width="100" label="名称"></el-table-column>
-        <el-table-column prop="icon" header-align="center" min-width="100" align="center" label="图标">
-          <template slot-scope="scope">
-            <i :class="scope.row.icon"></i>
-          </template>
-        </el-table-column>
-        <el-table-column prop="orderNum" header-align="center" min-width="100" align="center" label="排序号">
-        </el-table-column>
-        <el-table-column prop="url" header-align="center" align="center" min-width="100" :show-overflow-tooltip="true" label="菜单URL"></el-table-column>
-        <el-table-column fixed="right" header-align="center" align="center" min-width="120" label="操作">
+        <el-table-column prop="name" label="部门名称"></el-table-column>
+        <el-table-column prop="nodeData.phone" align="center"  label="电话"></el-table-column>
+        <el-table-column prop="nodeData.email" align="center"  label="邮箱"></el-table-column>
+        <el-table-column prop="nodeData.leader" align="center"  label="负责人"></el-table-column>
+        <el-table-column prop="nodeData.orderNum" align="center"  label="排序号"></el-table-column>
+        <el-table-column fixed="right"  align="center" min-width="120" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="addOrUpdate(scope.row.id,'add')" >添加</el-button>
             <el-button type="info" size="mini" @click="addOrUpdate(scope.row.id,'edit')" >修改</el-button>
             <el-button type="danger" size="mini" @click="deleteHandle(scope.row)" >删除</el-button>
           </template>
-        </el-table-column>
+        </el-table-column>  
       </el-table>
     </div>
-    <menu-add-or-update
+    <dept-add-or-update
      v-if="showDialog" 
-     ref="menuAddOrUpdate" 
-     @refreshMenuList="getMenuList"/>
+     ref="deptAddOrUpdate" 
+     @refreshDeptList="queryDeptList"/>
      
   </div>
-
-  
 </template>
 
 <script>
-
-  import MenuAddOrUpdate from "./MenuAddOrUpdate";
-
-  import {queryTreeMenu,delMenu} from "@api/sys/menu";
-
+  import DeptAddOrUpdate from "./DeptAddOrUpdate";
+import {queryTreeDept,delDept} from "@api/sys/dept";
   export default {
-    name: "Menu",
+    name: "Dept",
     data() {
       return {
-        dataList: [],
+        deptList: [],
         loading:false,
         showDialog: false,
-        menuForm: {
-          menuName: "",
+        deptForm: {
+          deptName: "",
         },
       }
     },
     components:{
-      MenuAddOrUpdate,
+      DeptAddOrUpdate,
     },
     created() {
       this.loading = true;
-      this.getMenuList();
+      this.queryDeptList();
     },
     methods: {
-      getMenuList(){
-        let userId = this.$store.state.user.userId;
-        queryTreeMenu(userId).then(res => {
+      queryDeptList(){
+        queryTreeDept().then(res => {
           if (res.code === 200) {
-            this.dataList = res.data;
+            this.deptList = res.data;
+            console.log('this.deptList :>> ', this.deptList);
           }
           this.loading = false;
         })
       },
-      addOrUpdate(menuId,opt) {
+      addOrUpdate(deptId,opt) {
         //新增或者修改
         this.showDialog = true;
         this.$nextTick(()=>{
-          this.$refs['menuAddOrUpdate'].init(menuId,opt);
+          this.$refs['deptAddOrUpdate'].init(deptId,opt);
         })
       },
       deleteHandle(row) {
@@ -105,12 +97,12 @@
           type: 'warning'
         }).then(()=>{
           if(row.children.length>0){
-            this.$message.error('存在子菜单,不允许删除');
+            this.$message.error('存在子部门,不允许删除');
           } else{
-            delMenu(row.id).then(res =>{
+            delDept(row.id).then(res =>{
               if(res.code ===200){
                 this.$message.success('删除成功')
-                this.getMenuList();
+                this.queryDeptList();
               } else{
                 this.$message.error('删除失败');
               }
@@ -120,18 +112,10 @@
       }
     },
   }
-</script>
 
-<style scoped>
-  .container-table {
-    
-  }
-  .search-form{
+</script>
+<style  scoped>
+ .search-form{
     float: left;
-  }
-  .add-form {
-    margin-left: 20px;
-    padding: 5px;
-    margin-top: 20px;
   }
 </style>

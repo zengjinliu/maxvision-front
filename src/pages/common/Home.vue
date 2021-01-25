@@ -28,9 +28,9 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item>修改密码</el-dropdown-item>
             <el-dropdown-item
-              @click.native=""
+              @click.native="logout()"
             >退出
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -47,7 +47,9 @@
 
 <script>
   import vHeader from "./Header";
-  import SideBar from "@views/menu/SideBar";
+  import SideBar from "@views/sys/menu/SideBar";
+ import {clearLoginInfo} from "@comm/ajax";
+  
 
   export default {
     name: "Home",
@@ -66,6 +68,13 @@
 
     },
     methods:{
+      logout(){
+        //退出登陆
+        sessionStorage.clear();
+        this.$router.push('/login');
+        //TODO 发出请求后台退出操作
+        clearLoginInfo();
+      }
 
     }
   }

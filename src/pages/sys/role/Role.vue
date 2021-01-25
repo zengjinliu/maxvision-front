@@ -17,23 +17,23 @@
       <el-table
         v-loading="loading"
         :data="tableData"
+         size="medium"
         :stripe="true"
         border
         @selection-change="handleSelectionChange"
         style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="roleName" label="名称" width="180" header-align="center" align="center"></el-table-column>
-        <el-table-column prop="remark" label="备注" width="180" header-align="center" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="创建日期" header-align="center" align="center"></el-table-column>
+        <el-table-column prop="roleName" label="名称" width="180" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="创建日期"  align="center"></el-table-column>
+        <el-table-column prop="remark" label="备注" width="180"  align="center"></el-table-column>
         <el-table-column
           fixed="right"
-          header-align="center"
           align="center"
           width="150"
           label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="addOrUpdate(scope.row.roleId)" >修改</el-button>
-            <el-button type="text" size="small" @click="del(scope.row.roleId)" >删除</el-button>
+            <el-button type="info" size="mini" @click="addOrUpdate(scope.row.roleId)" >修改</el-button>
+            <el-button type="danger" size="mini" @click="del(scope.row.roleId)" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>

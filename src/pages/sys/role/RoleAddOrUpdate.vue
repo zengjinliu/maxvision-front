@@ -1,7 +1,6 @@
 <template>
   <el-dialog :title="!roleForm.roleId ? '新增' : '修改'"
              :visible.sync="dialogShow"
-             :close-on-click-modal="false"
              :append-to-body="true">
 
     <el-form ref="roleForm" :model="roleForm"
@@ -22,7 +21,7 @@
           :data="treeData"
           show-checkbox
           default-expand-all
-          node-key="menuId"
+          node-key="id"
           ref="menuTree"
           highlight-current
           :default-checked-keys="this.roleForm.menuIds"
@@ -33,7 +32,7 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogShow = false">取 消</el-button>
-      <el-button type="primary" @click="doAddRole">确 定</el-button>
+      <el-button type="primary" @click="doAddOrUpdateRole">确 定</el-button>
     </div>
 
   </el-dialog>
@@ -52,7 +51,7 @@
           roleId: '',
           roleName: '',
           remark: '',
-          menuIds: []
+          menuId:'' 
         },
         roleFormRule: {
           roleName: [
@@ -60,9 +59,8 @@
           ]
         },
         defaultProps: {
-          children: 'childs',
+          children: 'children',
           label: 'name',
-          id: 'menuId'
         },
         dialogShow: false,
         treeData: [],
@@ -89,11 +87,20 @@
             if (res.code === 200) {
               this.roleForm.roleName = res.data.roleName;
               this.roleForm.remark = res.data.remark;
-              let that = this;
               this.checkStrictly = true;
+              let ids = [];
+              if(res.data.menuId){
+                ids = res.data.menuId.split(',');
+              }
+              let menuIds=[];
+              if(menuIds){
+               for(let i=0;i<ids.length;i++){
+                 menuIds .push(ids[i]);
+               }
+              }
               this.$nextTick(() => {
                 setTimeout(()=>{
-                  that.$refs.menuTree.setCheckedKeys(res.datas.menuIds);
+                  this.$refs.menuTree.setCheckedKeys(menuIds);
                   this.checkStrictly = false
                 },10)
               })
@@ -103,30 +110,34 @@
           this.clearData();
         }
       },
-      doAddRole() {
+      doAddOrUpdateRole() {
         //获取选中的节点信息
-        let menuIds = this.$refs.menuTree.getHalfCheckedKeys();
-        this.$refs.menuTree.getCheckedKeys().forEach(e => {
-          menuIds.push(e);
-        });
-        this.roleForm.menuIds = menuIds;
+        let checkNode = this.$refs.menuTree.getCheckedNodes(false,true);
+        let menuIds = [];
+        checkNode.forEach((item) => {
+          menuIds.push(item.id)
+        })
+        if(menuIds){
+          this.roleForm.menuId = menuIds.join(',');
+        }
         if (this.roleForm.roleId) {
           //修改
-          this.$refs['roleForm'].validate((valid) => {
-            if (valid) {
-              updateRole(this.roleForm).then(res => {
-                if (res.code === 200) {
-                  this.dialogShow = false;
-                  this.$message.success('修改成功')
-                  this.$emit('refreshList');
-                } else {
-                  this.$message.error('修改失败')
-                }
-              })
-            }
-          });
-        } else {
-          //新增
+          this.updateRole();
+       } else {
+          //新增角色
+          this.addRole();
+        }
+
+      },
+      clearData(){
+        //TODO 数据回显的问题
+        this.$nextTick(() => {
+          this.$refs['roleForm'].resetFields();
+          this.roleForm.remark = '';
+          this.$refs.menuTree.setCheckedKeys([])
+        })
+      },
+      addRole(){
           this.$refs['roleForm'].validate((valid) => {
             if (valid) {
               addRole(this.roleForm).then(res => {
@@ -139,16 +150,22 @@
               })
             }
           });
-        }
-
+        
       },
-      clearData(){
-        //TODO 数据回显的问题
-        this.$nextTick(() => {
-          this.$refs['roleForm'].resetFields();
-          this.roleForm.remark = '';
-          this.$refs.menuTree.setCheckedKeys([])
-        })
+      updateRole(){
+        this.$refs['roleForm'].validate((valid) => {
+            if (valid) {
+              updateRole(this.roleForm).then(res => {
+                if (res.code === 200) {
+                  this.dialogShow = false;
+                  this.$message.success('修改成功')
+                  this.$emit('refreshList');
+                } else {
+                  this.$message.error('修改失败')
+                }
+              })
+            }
+       });
       }
     }
   }
