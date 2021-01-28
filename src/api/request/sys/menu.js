@@ -12,3 +12,5 @@ export const addMenu = (param) => ajax(api.menu.addMenu, param, 'POST')
 export const queryByMenuId = (menuId) => ajax(api.menu.queryByMenuId, {menuId});
 //6.通过主键修改菜单
 export const updateMenu = (param) => ajax(api.menu.updateMenu, param, 'POST');
+//7.根据菜单名模糊查询菜单
+export const queryMenuByName = (menuName) => ajax(api.menu.queryMenuByName,{menuName});

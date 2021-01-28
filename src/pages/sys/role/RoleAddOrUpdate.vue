@@ -1,17 +1,19 @@
 <template>
   <el-dialog :title="!roleForm.roleId ? '新增' : '修改'"
              :visible.sync="dialogShow"
-             :append-to-body="true">
+             :append-to-body="true"
+             @open="openDialog"
+             >
 
     <el-form ref="roleForm" :model="roleForm"
              :rules="roleFormRule" label-width="80px"
-             @keyup.enter.native="doAddRole"
+             @keyup.enter.native="doAddOrUpdateRole()"
     >
 
       <el-form-item label="角色名称" prop="roleName">
         <el-input v-model="roleForm.roleName"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="password">
+      <el-form-item label="备注" prop="remark">
         <el-input type="textarea" :rows="2" v-model="roleForm.remark"></el-input>
       </el-form-item>
       <!--树形控件-->
@@ -24,7 +26,6 @@
           node-key="id"
           ref="menuTree"
           highlight-current
-          :default-checked-keys="this.roleForm.menuIds"
           :props="defaultProps">
         </el-tree>
       </el-form-item>
@@ -32,7 +33,7 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogShow = false">取 消</el-button>
-      <el-button type="primary" @click="doAddOrUpdateRole">确 定</el-button>
+      <el-button type="primary" @click="doAddOrUpdateRole()">确 定</el-button>
     </div>
 
   </el-dialog>
@@ -80,10 +81,17 @@
     methods: {
       init(roleId) {
         this.dialogShow = true;
-        //修改信息回显
-        if (roleId != undefined) {
-          this.roleForm.roleId = roleId;
-          queryByRoleId(roleId).then(res => {
+        this.roleForm.roleId = roleId || ''
+        this.$nextTick(()=>{
+          this.$refs['roleForm'].resetFields();
+          if(this.roleForm.roleId){
+            this.showData();
+          }
+        });
+      },
+      //修改数据回显
+      showData(){
+        queryByRoleId(this.roleForm.roleId).then(res => {
             if (res.code === 200) {
               this.roleForm.roleName = res.data.roleName;
               this.roleForm.remark = res.data.remark;
@@ -106,10 +114,8 @@
               })
             }
           })
-        } else {
-          this.clearData();
-        }
       },
+
       doAddOrUpdateRole() {
         //获取选中的节点信息
         let checkNode = this.$refs.menuTree.getCheckedNodes(false,true);
@@ -129,14 +135,7 @@
         }
 
       },
-      clearData(){
-        //TODO 数据回显的问题
-        this.$nextTick(() => {
-          this.$refs['roleForm'].resetFields();
-          this.roleForm.remark = '';
-          this.$refs.menuTree.setCheckedKeys([])
-        })
-      },
+      //新增角色
       addRole(){
           this.$refs['roleForm'].validate((valid) => {
             if (valid) {
@@ -145,13 +144,14 @@
                   this.dialogShow = false;
                   this.$emit('refreshList')
                   this.$message.success('添加成功');
-                  this.clearData();
+                  this.$refs.menuTree.setCheckedKeys([])
                 }
               })
             }
           });
         
       },
+      //更新角色
       updateRole(){
         this.$refs['roleForm'].validate((valid) => {
             if (valid) {
@@ -160,13 +160,21 @@
                   this.dialogShow = false;
                   this.$message.success('修改成功')
                   this.$emit('refreshList');
+                  this.$refs.menuTree.setCheckedKeys([])
                 } else {
                   this.$message.error('修改失败')
                 }
               })
             }
        });
-      }
+      },
+      //清空校验
+      openDialog(){
+        this.$nextTick(()=>{
+          this.$refs.roleForm.clearValidate();
+        });
+      },
+
     }
   }
 </script>

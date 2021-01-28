@@ -8,19 +8,19 @@
         label-width="100px"
         class="demo-form-inline"
       >
-        <el-form-item label="姓名" prop="username">
-          <el-input v-model="userForm.username"></el-input>
+        <el-form-item label="姓名" prop="userName">
+          <el-input v-model="userForm.userName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="doSearch">查询</el-button>
-          <el-button type="success" @click="addOrUpdate()">添加</el-button>
+          <el-button type="success" icon="el-icon-search" @click="doSearch()">搜索</el-button>
+          <el-button type="primary" @click="addOrUpdate()">添加</el-button>
           <el-button
             type="danger"
             @click="del()"
             :disabled="userIds.length <= 0"
             >批量删除</el-button
           >
-          <el-button type="info" @click="exportUserList()">导出</el-button>
+          <el-button type="info" @click="reset()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -39,27 +39,16 @@
         <el-table-column
           prop="userName"
           label="姓名"
-          width="180"
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="pic"
-          label="图片"
-          width="180"
+          prop="loginName"
+          label="登陆账户"
           align="center"
-        >
-          <template slot-scope="scope">
-            <img
-              :src="scope.row.loginIp"
-              alt=""
-              style="width: 20px; height: 20px"
-            />
-          </template>
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           prop="phonenumber"
           label="电话"
-          width="180"
           align="center"
         ></el-table-column>
         <el-table-column
@@ -70,7 +59,6 @@
         <el-table-column
           fixed="right"
           align="center"
-          width="150"
           label="操作"
         >
           <template slot-scope="scope">
@@ -121,7 +109,7 @@ export default {
   data() {
     return {
       userForm: {
-        username: "",
+        userName: "",
         phone: "",
         page: 1,
         rows: 10,
@@ -195,12 +183,16 @@ export default {
       this.page();
     },
     addOrUpdate(userId) {
-      console.log(userId);
       //修改
       this.showAddOrUpdate = true;
       this.$nextTick(() => {
         this.$refs["userAddOrUpdate"].init(userId);
       });
+    },
+    //重置
+    reset(){
+        this.userForm.userName = '';
+        this.page();
     },
     exportUserList() {
       //导出 excel
@@ -211,9 +203,6 @@ export default {
 </script>
 
 <style scoped>
-.container-table {
-}
-
 .search-form {
   float: left;
 }

@@ -12,8 +12,9 @@
           <el-input v-model="menuForm.menuName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" >查询</el-button>
+          <el-button type="success" icon="el-icon-search" @click="doSearch">搜索</el-button>
           <el-button type="primary" @click="addOrUpdate('','add')">添加</el-button>
+          <el-button type="info" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -27,16 +28,16 @@
         border
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         style="width: 100%; ">
-        <el-table-column prop="name" header-align="center" min-width="100" label="名称"></el-table-column>
-        <el-table-column prop="icon" header-align="center" min-width="100" align="center" label="图标">
+        <el-table-column prop="name"  label="名称"></el-table-column>
+        <el-table-column prop="icon"   align="center" label="图标">
           <template slot-scope="scope">
-            <i :class="scope.row.icon"></i>
+            <icon-svg :name="scope.row.icon"></icon-svg>
           </template>
         </el-table-column>
-        <el-table-column prop="orderNum" header-align="center" min-width="100" align="center" label="排序号">
+        <el-table-column prop="orderNum"  align="center" label="排序号">
         </el-table-column>
-        <el-table-column prop="url" header-align="center" align="center" min-width="100" :show-overflow-tooltip="true" label="菜单URL"></el-table-column>
-        <el-table-column fixed="right" header-align="center" align="center" min-width="120" label="操作">
+        <el-table-column prop="url"  align="center"  :show-overflow-tooltip="true" label="菜单URL"></el-table-column>
+        <el-table-column fixed="right"  align="center" min-width="120" label="操作">
           <template slot-scope="scope">
             <el-button type="primary"  size="mini"  @click="addOrUpdate(scope.row.id,'add')" >添加</el-button>
             <el-button type="info"   size="mini" @click="addOrUpdate(scope.row.id,'edit')" >修改</el-button>
@@ -59,7 +60,7 @@
 
   import MenuAddOrUpdate from "./MenuAddOrUpdate";
 
-  import {queryTreeMenu,delMenu} from "@api/sys/menu";
+  import {queryTreeMenu,delMenu,queryMenuByName} from "@api/sys/menu";
 
   export default {
     name: "Menu",
@@ -85,6 +86,7 @@
         let userId = this.$store.state.user.userId;
         queryTreeMenu(userId).then(res => {
           if (res.code === 200) {
+            console.log(res.data);
             this.dataList = res.data;
           }
           this.loading = false;
@@ -117,6 +119,17 @@
             })
           }
         }).catch(cancel=>{})
+      },
+      doSearch(){
+        queryMenuByName(this.menuForm.menuName).then(res=>{
+          if(res.code===200){
+            this.dataList = res.data;
+          }
+        })
+      },
+      reset(){
+        this.menuForm.menuName = ''
+        this.getMenuList();
       }
     },
   }

@@ -44,8 +44,16 @@ let routes = [
         component: resolve => require(['@views/sys/dept/Dept'], resolve),
       },
       {
-        path: '/echart',
-        component: resolve => require(['@views/echarts/EchartDemo'], resolve),
+        path: '/post',
+        component: resolve => require(['@views/sys/post/Post'], resolve),
+      },
+      {
+        path: '/dict',
+        component: resolve => require(['@views/sys/dict/DictType'], resolve),
+      },
+      {
+        path: '/dictData/:dictType',
+        component: resolve => require(['@views/sys/dict/DictData'], resolve),
       },
 
     ]

@@ -28,4 +28,13 @@
 html,body,#app{
  height: 100%;
 }
+ body{
+    margin: auto;
+    padding: 0;
+    height: 100%;
+  }
+  body .el-table th.gutter{
+    display: table-cell!important;
+  }
+
 </style>

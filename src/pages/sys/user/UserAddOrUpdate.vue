@@ -1,7 +1,9 @@
 <template>
   <el-dialog :title="userForm.userId?`修改用户`:`新增用户`"
              :visible.sync="dialogFormVisible"
-             :append-to-body="true">
+             :append-to-body="true"
+             @open="openDialog"
+             >
 
     <el-form ref="userForm" :model="userForm"
              :rules="userFormRule" label-width="80px"
@@ -16,8 +18,8 @@
       <el-form-item label="密码" prop="password">
         <el-input v-model="userForm.password" type="password"></el-input>
       </el-form-item>
-      <el-form-item label="角色" prop="roleId">
-        <el-select v-model="userForm.roleId" placeholder="请选择"
+      <el-form-item label="角色" prop="roleIds">
+        <el-select v-model="userForm.roleIds" placeholder="请选择角色"
                    multiple size="medium" filterable clearable
         >
         <el-option
@@ -28,15 +30,39 @@
         </el-option>
         </el-select>
       </el-form-item>
+       <el-form-item label="岗位" prop="postIds">
+        <el-select v-model="userForm.postIds" placeholder="请选择岗位"
+                   multiple size="medium" filterable clearable
+        >
+        <el-option
+          v-for="item in postList"
+          :key="item.postId"
+          :label="item.postName"
+          :value="item.postId">
+        </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="部门" prop="deptId">
+        <treeselect 
+          placeholder="请选择部门"
+          v-model="userForm.deptId" 
+          :multiple="false" 
+          :options="deptData"
+          :normalizer="normalizer"
+          @select="handleSelectDept"
+          />
+ 
+      </el-form-item>
+
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="userForm.email"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="phonenumber">
         <el-input v-model="userForm.phonenumber"></el-input>
       </el-form-item>
-      <el-form-item label="头像" prop="pic">
+      <!-- <el-form-item label="头像" prop="pic">
         <single-upload v-model="userForm.pic"></single-upload>
-      </el-form-item>
+      </el-form-item> -->
   
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -48,13 +74,18 @@
 
 <script>
   import {checkNameExist,add,update,queryUserById} from "@api/sys/user";
+  import {queryTreeDept} from "@api/sys/dept";
   import {queryAllRole} from "@api/sys/role";
-  import SingleUpload from "@views/upload/SingleUpload";
+  import {queryAllPost} from "@api/sys/post";
+  import SingleUpload from "@views/common/upload/SingleUpload";
+  import Treeselect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
   export default {
     name: "UserAddOrUpdate",
     components:{
-      SingleUpload
+      SingleUpload,
+      Treeselect
     },
     data() {
       let checkName = (rule, value, callback) => {
@@ -62,7 +93,7 @@
           callback();
         }else{
           checkNameExist(value).then(res=>{
-            if(res.data){
+            if(res.code!=200){
               callback(new Error('该账户已存在已存在'));
             }else{
               callback();
@@ -71,7 +102,13 @@
         }
       };
       return {
-        dialogFormVisible: false,
+        normalizer(node){
+          return {
+            id: node.id,
+            label:node.name,
+            children:node.children,
+          }
+        },
         userForm: {
           userName: '',
           loginName:'',
@@ -79,25 +116,35 @@
           email:'',
           phonenumber: '',
           pic: '',
-          deptId:'',
+          deptId:null,
           postId:'',
           roleId: '',
+          postIds:[],
+          roleIds:[],
           userId:''
         },
-        roleList:[],
+        dialogFormVisible: false,
+        showTree:false,//是否展示部门树
+        roleList:[],//角色列表
+        postList:[],//岗位列表
+        deptData:[],//部门树
+        roleList:[],//角色集合
         userFormRule: {
           loginName: [
             {required: true, message: '用户名不能为空', trigger: 'blur'},
-            // {validator: checkName, trigger: 'blur'}
+            {validator: checkName, trigger: 'blur'}
           ],
           password: [
             {required: true, message: '密码不能为空', trigger: 'blur'}
           ],
-          roleId: [
+          roleIds: [
             {required: true, message: '角色不能为空', trigger: 'blur'}
           ],
         },
-        roleList:[],
+        defaultProps: {
+          children: 'children',
+          label: 'name',
+        },
       }
     },
     created() {
@@ -106,37 +153,42 @@
         if(res.code===200){
           this.roleList = res.data;
         }
+      });
+      //获取所有岗位
+      queryAllPost().then(res=>{
+        if(res.code===200){
+          this.postList = res.data;
+        }
+      });
+      //获取部门树结构
+      queryTreeDept().then(res=>{
+        if(res.code===200){
+            this.deptData = res.data;
+        }
       })
     },
     methods: {
+       //初始化
       init(userId) {
-        //初始化
         this.dialogFormVisible = true;
-        if(userId!=undefined){
-          this.userForm.userId = userId;
-          //数据回显
-          queryUserById(userId).then(res =>{
-            if(res.code===200){
-              console.log(res);
-              this.userForm.userName = res.data.userName;
-              this.userForm.password = res.data.password;
-              this.userForm.loginName = res.data.loginName;
-              this.userForm.email = res.data.email;
-              this.userForm.phonenumber = res.data.phonenumber;
-              this.userForm.pic = res.data.pic;
-              this.userForm.deptId = res.data.deptId;
-              this.userForm.postId = res.data.postId;
-              this.userForm.roleId = res.data.roleId;
-            }
-          })
-        }else {
-          this.$nextTick(()=>{
-            this.$refs['userForm'].resetFields();
-          })
-        }
+        this.userForm.userId = userId || '';
+        this.$nextTick(()=>{
+          this.$refs['userForm'].resetFields()
+          if(this.userForm.userId){
+            this.showData();
+          }
+        });
       },
+      //数据回显
+      showData(){
+        queryUserById(this.userForm.userId).then(res =>{
+            if(res.code===200){
+             this.dataEcho(res);
+            }
+        })
+      },
+      //新增或者修改操作
       doAddOrUpdateUser(){
-        //TODO 图片采用存储到本地
         if(this.userForm.userId){
           //修改
           this.updateUser();
@@ -145,12 +197,12 @@
           this.addUser();
         }
       },
+      //新增用户
       addUser(){
         this.$refs['userForm'].validate((valid) =>{
           if(valid){
-            console.log(this.userForm.roleId.join(","));
-            this.userForm.roleId = this.userForm.roleId.join(",");
-            console.log(this.userForm);
+            this.userForm.roleId = this.userForm.roleIds.join(",");
+            this.userForm.postId = this.userForm.postIds.join(",");
             add(this.userForm).then(res=>{
               if(res.code===200){
                 this.dialogFormVisible = false;
@@ -164,9 +216,12 @@
           }
         })
       },
+      //修改用户
       updateUser(){
         this.$refs['userForm'].validate((valid) =>{
           if(valid){
+            this.userForm.roleId = this.userForm.roleIds.join(",");
+            this.userForm.postId = this.userForm.postIds.join(",");
             update(this.userForm).then(res =>{
               if(res.code===200){
                 this.dialogFormVisible = false;
@@ -178,6 +233,44 @@
             })
           }
         })
+      },
+      //数据回显
+      dataEcho(res){
+        //数据回显
+        const info = res.data;
+        this.userForm.userName = info.userName;
+        this.userForm.password = info.password;
+        this.userForm.loginName = info.loginName;
+        this.userForm.email = info.email;
+        this.userForm.phonenumber = info.phonenumber;
+        this.userForm.pic = info.pic;
+        this.userForm.deptId = info.deptId;
+        if(info.postId){
+          const postIdArr = [];
+          const postIds = info.postId.split(',')
+          for(let i=0;i<postIds.length;i++) {
+            postIdArr.push(postIds[i]);
+          }
+          this.userForm.postIds = postIdArr;
+        }
+         if(info.roleId){
+          const roleIdArr = [];
+          const roleIds = info.roleId.split(',')
+          for(let i=0;i<roleIds.length;i++) {
+            roleIdArr.push(roleIds[i]);
+          }
+           this.userForm.roleIds = roleIdArr;
+        }
+      },
+      //关闭部门树结构回调
+      handleSelectDept(node, instanceId){
+        this.userForm.deptId = node.id;
+      },
+      //清空校验
+      openDialog(){
+        this.$nextTick(()=>{
+          this.$refs.userForm.clearValidate();
+        });
       }
     }
   }
@@ -187,4 +280,5 @@
 .el-select--medium{
   width: 60%;
 }
+
 </style>

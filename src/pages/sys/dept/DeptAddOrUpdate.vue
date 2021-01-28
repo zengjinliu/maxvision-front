@@ -3,6 +3,7 @@
     :title="deptForm.deptId ? `修改部门` : `新增部门`"
     :visible.sync="showDialog"
     :append-to-body="true"
+    @open="openDialog"
   >
     <el-form
       :model="deptForm"
@@ -81,7 +82,7 @@ export default {
     init(deptId, opt) {
       this.showDialog = true;
       this.opt = opt;
-      if (deptId != "") {
+      if (deptId != ""&&deptId!=undefined) {
         if (this.opt === "add") {
           this.deptForm.parentId = deptId;
           //子级菜单新增数据回显
@@ -152,11 +153,18 @@ export default {
         }
       });
     },
+    //清空表单
     refreshForm() {
       this.$nextTick(() => {
         this.$refs["deptForm"].resetFields();
       });
     },
+    //清空校验
+    openDialog(){
+      this.$nextTick(()=>{
+        this.$refs.deptForm.clearValidate();
+      });
+    }
   },
 };
 </script>

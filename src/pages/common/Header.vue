@@ -1,13 +1,7 @@
 <template>
         <el-header class="header">
           <div>
-            <i
-              :class="{
-                'el-icon-s-fold': collapse,
-                'el-icon-s-unfold': !collapse
-              }"
-              @click="handleCollapse"
-            ></i>
+            <i class="el-icon-menu" @click="handleCollapse" ></i>
             <span>审讯平台</span>
           </div>
           <el-dropdown>

@@ -1,8 +1,7 @@
 <template>
   <div>
     <el-upload
-      action="http://skydream.oss-cn-shenzhen.aliyuncs.com"
-      :data="dataObj"
+      action="/api/sys/image/upload"
       list-type="picture-card"
       :file-list="fileList"
       :before-upload="beforeUpload"
@@ -20,8 +19,7 @@
   </div>
 </template>
 <script>
-import { getSingature } from "@api/sys/user";
-import { getUUID } from "@api/sys/login";
+
 export default {
   name: "MultiUpload",
   props: {
@@ -35,15 +33,6 @@ export default {
   },
   data() {
     return {
-      dataObj: {
-        policy: "",
-        signature: "",
-        key: "",
-        ossaccessKeyId: "",
-        dir: "",
-        host: "",
-        uuid: "",
-      },
       dialogVisible: false,
       dialogImageUrl: null,
     };
@@ -74,34 +63,22 @@ export default {
       this.dialogImageUrl = file.url;
     },
     beforeUpload(file) {
-      let _self = this;
-      return new Promise((resolve, reject) => {
-        getSingature()
-          .then((response) => {
-            _self.dataObj.policy = response.datas.policy;
-            _self.dataObj.signature = response.datas.signature;
-            _self.dataObj.ossaccessKeyId = response.datas.accessKeyId;
-            _self.dataObj.key = response.datas.dir + getUUID() + "_${filename}";
-            _self.dataObj.dir = response.datas.dir;
-            _self.dataObj.host = response.datas.host;
-            resolve(true);
-          })
-          .catch((err) => {
-            console.log("出错了...", err);
-            reject(false);
-          });
-      });
+     
     },
     handleUploadSuccess(res, file) {
-      this.fileList.push({
-        name: file.name,
-        // url: this.dataObj.host + "/" + this.dataObj.dir + "/" + file.name； 替换${filename}为真正的文件名
-        url:
-          this.dataObj.host +
-          "/" +
-          this.dataObj.key.replace("${filename}", file.name),
-      });
-      this.emitInput(this.fileList);
+        if(res.code===200){
+          this.fileList.push({name: file.name,url:res.data.src});
+          this.emitInput(this.fileList);
+          this.$message({
+          message: '上传成功',
+          type: 'success'
+        });
+        }else{
+          this.$message.error('上传失败');
+        }
+
+    
+      
     },
     handleExceed(files, fileList) {
       this.$message({

@@ -3,6 +3,8 @@
     :title="dataForm.menuId ? `修改菜单` : `新增菜单`"
     :visible.sync="showDialog"
     :append-to-body="true"
+    @open="openDialog"
+    @close="closeDialog"
   >
     <el-form
       :model="dataForm"
@@ -25,8 +27,32 @@
           label="排序号"
         ></el-input-number>
       </el-form-item>
-      <el-form-item label="菜单图标" prop="icon">
+      <!-- <el-form-item label="菜单图标" prop="icon">
         <el-input v-model="dataForm.icon" placeholder="菜单图标名称"></el-input>
+      </el-form-item> -->
+      <el-form-item  label="菜单图标" prop="icon" >
+        <el-row>
+          <el-col :span="22">
+            <el-popover
+              ref="iconListPopover"
+              placement="bottom-start"
+              trigger="click"
+              popper-class="mod-menu__icon-popover">
+              <div class="mod-menu__icon-inner">
+                <div class="mod-menu__icon-list">
+                  <el-button
+                    v-for="(item, index) in iconList"
+                    :key="index"
+                    @click="iconActiveHandle(item)"
+                    :class="{ 'is-active': item === dataForm.icon }">
+                    <icon-svg :name="item"></icon-svg>
+                  </el-button>
+                </div>
+              </div>
+            </el-popover>
+            <el-input v-model="dataForm.icon" v-popover:iconListPopover placeholder="菜单图标名称" class="icon-list__input"></el-input>
+          </el-col>
+        </el-row>
       </el-form-item>
       <el-form-item label="权限" prop="perms">
         <el-input
@@ -50,7 +76,7 @@
 
 <script>
 import { addMenu, queryByMenuId, updateMenu } from "@api/sys/menu";
-
+import Icon from '@/icons'
 export default {
   name: "MenuAddOrUpdate",
   data() {
@@ -79,13 +105,14 @@ export default {
     };
   },
   created() {
-    //TOOD 菜单图标待完成
+    //菜单图标展示
+    this.iconList = Icon.getNameList()
   },
   methods: {
     init(menuId, opt) {
       this.showDialog = true;
       this.opt = opt;
-      if (menuId != "") {
+      if (menuId != ""&& menuId!=undefined) {
         if (this.opt === "add") {
           this.dataForm.parentId = menuId;
           //子级菜单新增数据回显
@@ -153,17 +180,69 @@ export default {
           this.dataForm.orderNum = current.orderNum;
           this.dataForm.perms = current.perms;
           this.dataForm.url = current.url;
+          this.dataForm.icon = current.icon;
         }
       });
     },
+    //清空表单
     refreshForm() {
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();
       });
     },
+    //清空校验
+    openDialog(){
+      this.$nextTick(()=>{
+        this.$refs.dataForm.clearValidate();
+      });
+    },
+     //图标选中
+    iconActiveHandle (iconName) {
+        this.dataForm.icon = iconName
+    },
+    closeDialog(){
+       this.dataForm.icon = '';
+    }
   },
+ 
 };
 </script>
 
 <style scoped>
+.icon-list_input > .el-input_inner{
+  cursor: pointer;
+}
+.mod-menu__icon-popover{
+  width: 458px;
+  overflow: hidden;
+
+}
+.mod-menu__icon-inner{
+   width: 478px;
+      max-height: 258px;
+      overflow-x: hidden;
+      overflow-y: auto;
+}
+.mod-menu__icon-list{
+    width: 458px;
+      padding: 0;
+      margin: -8px 0 0 -8px;
+}
+.mod-menu__icon-list > .el-button{
+        padding: 8px;
+        margin: 8px 0 0 8px;
+}
+.mod-menu__icon-list > .el-button > span{
+  display: inline-block;
+          vertical-align: middle;
+          width: 18px;
+          height: 18px;
+          font-size: 18px;
+}
+.icon-list__tips {
+      font-size: 18px;
+      text-align: center;
+      color: #e6a23c;
+      cursor: pointer;
+    }
 </style>

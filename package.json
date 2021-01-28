@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "^0.4.0",
     "axios": "^0.19.2",
     "crypto-js": "^4.0.0",
     "echarts": "^4.9.0",
@@ -52,6 +53,7 @@
     "shelljs": "^0.7.6",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
+    "svg-sprite-loader": "^5.2.1",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",

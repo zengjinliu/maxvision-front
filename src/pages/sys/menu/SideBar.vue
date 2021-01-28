@@ -9,13 +9,13 @@
     :collapse="collapse"
   >
     <el-menu-item index="/home" >
-      <i class="el-icon-house"></i>
+      <icon-svg name="index"></icon-svg>
       <span slot="title">首页</span>
     </el-menu-item>
     <!--一级菜单-->
     <el-submenu v-for="item in menus" :key="item.id" :index="item.url">
       <template slot="title">
-        <i :class="item.icon"></i>
+        <icon-svg :name="item.icon"></icon-svg>
         <span>{{item.name}}</span>
       </template>
       <!-- 二级菜单 -->

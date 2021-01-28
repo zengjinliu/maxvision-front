@@ -2,8 +2,7 @@
 <template>
   <div>
     <el-upload
-      action="http://skydream.oss-cn-shenzhen.aliyuncs.com"
-      :data="dataObj"
+      action="/api/sys/image/upload"
       list-type="picture"
       :multiple="false" :show-file-list="showFileList"
       :file-list="fileList"
@@ -20,8 +19,6 @@
   </div>
 </template>
 <script>
-  import {getSingature} from '@api/sys/user'
-  import {getUUID} from '@api/sys/login'
   export default {
     name: 'singleUpload',
     props: {
@@ -40,7 +37,7 @@
       },
       fileList() {
         return [{
-          name: this.imageName,
+          // name: this.imageName,
           url: this.imageUrl
         }]
       },
@@ -54,14 +51,6 @@
     },
     data() {
       return {
-        dataObj: {
-          policy: '',
-          signature: '',
-          key: '',
-          ossaccessKeyId: '',
-          dir: '',
-          host: '',
-        },
         dialogVisible: false
       };
     },
@@ -76,27 +65,22 @@
         this.dialogVisible = true;
       },
       beforeUpload(file) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-          getSingature().then(response => {
-            _self.dataObj.policy = response.datas.policy;
-            _self.dataObj.signature = response.datas.signature;
-            _self.dataObj.ossaccessKeyId = response.datas.accessKeyId;
-            _self.dataObj.key = response.datas.dir + getUUID()+'_${filename}';
-            _self.dataObj.dir = response.datas.dir;
-            _self.dataObj.host = response.datas.host;
-            resolve(true)
-          }).catch(err => {
-            reject(false)
-          })
-        })
+       
       },
       handleUploadSuccess(res, file) {
-        console.log("上传成功...")
-        this.showFileList = true;
-        this.fileList.pop();
-        this.fileList.push({name: file.name, url: this.dataObj.host + '/' + this.dataObj.key.replace("${filename}",file.name) });
-        this.emitInput(this.fileList[0].url);
+        if(res.code===200){
+          this.showFileList = true;
+          this.fileList.pop();
+          this.fileList.push({name: file.name, url: res.data.src});
+          this.emitInput(this.fileList[0].url);
+          this.$message({
+          message: '上传成功',
+          type: 'success'
+        });
+        }else{
+          this.$message.error('上传失败');
+        }
+       
       }
     }
   }

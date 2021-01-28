@@ -13,8 +13,9 @@
           <el-input v-model="deptForm.deptName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" >查询</el-button>
+          <el-button type="success" icon="el-icon-search" @click="doSearch">搜索</el-button>
           <el-button type="primary" @click="addOrUpdate('','add')">添加</el-button>
+          <el-button type="info" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -52,7 +53,7 @@
 
 <script>
   import DeptAddOrUpdate from "./DeptAddOrUpdate";
-import {queryTreeDept,delDept} from "@api/sys/dept";
+import {queryTreeDept,delDept,queryDeptByName} from "@api/sys/dept";
   export default {
     name: "Dept",
     data() {
@@ -77,7 +78,6 @@ import {queryTreeDept,delDept} from "@api/sys/dept";
         queryTreeDept().then(res => {
           if (res.code === 200) {
             this.deptList = res.data;
-            console.log('this.deptList :>> ', this.deptList);
           }
           this.loading = false;
         })
@@ -109,6 +109,18 @@ import {queryTreeDept,delDept} from "@api/sys/dept";
             })
           }
         }).catch(cancel=>{})
+      },
+      doSearch(){
+        queryDeptByName(this.deptForm.deptName).then(res=>{
+          if(res.code===200){
+            this.deptList = res.data;
+          }
+        })
+      },
+      //重置
+      reset(){
+        this.deptForm.deptName = '';
+        this.queryDeptList();
       }
     },
   }

@@ -6,9 +6,10 @@
           <el-input v-model="roleForm.roleName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="doSearch">查询</el-button>
-          <el-button type="success" @click="addOrUpdate()" >添加</el-button>
+           <el-button type="success" icon="el-icon-search" @click="doSearch()">搜索</el-button>
+          <el-button type="primary" @click="addOrUpdate()" >添加</el-button>
           <el-button type="danger" @click="del()" :disabled="roleIds.length <=0" >批量删除</el-button>
+          <el-button type="info" @click="reset()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -23,14 +24,10 @@
         @selection-change="handleSelectionChange"
         style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="roleName" label="名称" width="180" align="center"></el-table-column>
+        <el-table-column prop="roleName" label="名称"  align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建日期"  align="center"></el-table-column>
-        <el-table-column prop="remark" label="备注" width="180"  align="center"></el-table-column>
-        <el-table-column
-          fixed="right"
-          align="center"
-          width="150"
-          label="操作">
+        <el-table-column prop="remark" label="备注"   align="center"></el-table-column>
+        <el-table-column fixed="right"  align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="info" size="mini" @click="addOrUpdate(scope.row.roleId)" >修改</el-button>
             <el-button type="danger" size="mini" @click="del(scope.row.roleId)" >删除</el-button>
@@ -141,15 +138,19 @@
         this.$nextTick(()=>{
           this.$refs['roleAddOrUpdate'].init(roleId);
         });
+      },
+      //重置
+      reset(){
+        this.roleForm.roleName = '';
+        this.page();
       }
+      
     }
   }
 </script>
 
 <style scoped>
-  .container-table {
-  
-  }
+
 
   .search-form {
     float: left;
