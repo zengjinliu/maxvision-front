@@ -29,7 +29,6 @@
 <script>
 
   import {updatePwd,doLogout} from "@api/sys/login";
-  import {clearLoginInfo} from "@comm/ajax";
 
   export default {
     name: "UpdatePassword",
@@ -83,7 +82,6 @@
               //更新密码成功后，清楚浏览信息，并重新登录
               if(res.code ===200){
                 doLogout();
-                clearLoginInfo()
               }
             }).catch(()=>{});
           }

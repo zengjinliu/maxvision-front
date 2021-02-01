@@ -12,16 +12,24 @@
           <el-input v-model="postForm.postName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" icon="el-icon-search" @click="doSearch()">搜索</el-button>
-          <el-button type="primary" @click="addOrUpdate()">添加</el-button>
+          <el-button type="success" icon="el-icon-search" @click="doSearch()"
+            >搜索</el-button
+          >
+          <el-button
+            type="primary"
+            v-if="HasPerms('sys_post_add')"
+            @click="addOrUpdate()"
+            >添加</el-button
+          >
           <el-button
             type="danger"
+            v-if="HasPerms('sys_post_del')"
             @click="del()"
             :disabled="postIds.length <= 0"
-            >批量删除</el-button>
+            >批量删除</el-button
+          >
           <el-button type="info" @click="reset()">重置</el-button>
         </el-form-item>
-        
       </el-form>
     </div>
     <div class="container-table">
@@ -35,15 +43,48 @@
         @selection-change="handleSelectionChange"
         style="width: 100%"
       >
-        <el-table-column type="selection"  align="center"> </el-table-column>
-        <el-table-column prop="postName" label="岗位名称"  align="center"></el-table-column>
-        <el-table-column prop="postCode" label="岗位编码" align="center"></el-table-column>
-        <el-table-column prop="remark" label="备注" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"  align="center"></el-table-column>
-       <el-table-column fixed="right"  align="center" min-width="120" label="操作">
+        <el-table-column type="selection" align="center"> </el-table-column>
+        <el-table-column
+          prop="postName"
+          label="岗位名称"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="postCode"
+          label="岗位编码"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="remark"
+          label="备注"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          fixed="right"
+          align="center"
+          min-width="120"
+          label="操作"
+        >
           <template slot-scope="scope">
-            <el-button type="info" size="mini" @click="addOrUpdate(scope.row.postId)">修改</el-button>
-            <el-button type="danger" size="mini"  @click="del(scope.row.postId)">删除</el-button>
+            <el-button
+              type="info"
+              size="mini"
+              v-if="HasPerms('sys_post_update')"
+              @click="addOrUpdate(scope.row.postId)"
+              >修改</el-button
+            >
+            <el-button
+              type="danger"
+              v-if="HasPerms('sys_post_del')"
+              size="mini"
+              @click="del(scope.row.postId)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -80,7 +121,7 @@ export default {
   data() {
     return {
       postForm: {
-        postName: '',
+        postName: "",
         page: 1,
         rows: 10,
       },
@@ -116,7 +157,9 @@ export default {
     },
     del(postId) {
       //类似Java中的map方法
-      let postIds = postId? [postId]: this.postIds.map((item) => {
+      let postIds = postId
+        ? [postId]
+        : this.postIds.map((item) => {
             return item.postId;
           });
       //删除单个部门
@@ -124,7 +167,8 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
+      })
+        .then(() => {
           delPost(postIds)
             .then((res) => {
               if (res.code === 200) {
@@ -152,7 +196,7 @@ export default {
       this.page();
     },
     addOrUpdate(postId) {
-      console.log('--------->postId:' + postId);
+      console.log("--------->postId:" + postId);
       //修改
       this.showAddOrUpdate = true;
       this.$nextTick(() => {
@@ -160,10 +204,10 @@ export default {
       });
     },
     //重置
-    reset(){
-      this.postForm.postName = '';
+    reset() {
+      this.postForm.postName = "";
       this.page();
-    }
+    },
   },
 };
 </script>

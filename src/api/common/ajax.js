@@ -7,8 +7,9 @@ ajax请求函数封装模块
 */
 
 import axios from 'axios'
-import Vue from 'vue'
 import VueRouter from '../../router'
+import Cookies from 'js-cookie'
+import { Notification, MessageBox, Message } from 'element-ui'
 
 
 //请求地址
@@ -19,7 +20,6 @@ axios.defaults.withCredentials = true;
  * 请求拦截
  */
 axios.interceptors.request.use(config => {
-  // config.headers['token'] = Vue.cookie.get('token') // 请求头带上token
   return config
 }, error => {
   return Promise.reject(error)
@@ -28,12 +28,40 @@ axios.interceptors.request.use(config => {
 /**
  * 响应拦截
  */
-axios.interceptors.response.use(response => {
-  // if (response.data && response.data.code === 401) { // 401, token失效
-  //   clearLoginInfo()
-  //   VueRouter.push({path: '/login'})
-  // }
-  return response
+axios.interceptors.response.use(res => {
+
+  //返回错误码在请求头中
+  const errorCode = res.headers.code
+  if (errorCode) {
+    if (errorCode === '401') {
+      MessageBox.alert('登录状态已过期，者重新登录', '系统提示', {
+        confirmButtonText: '重新登录',
+        showClose:false,
+        closeOnClickModal:false,
+        showCancelButton:false,
+        type: 'warning'
+      }).then(() => {
+        sessionStorage.clear();
+        VueRouter.push({ path: '/login' });
+      }).catch(() => { });
+    } else if (errorCode === '403') {
+      Message.error('无操作权限')
+      return Promise.reject(new Error(msg));
+    }
+  } else {
+    const msg = res.data.msg || '';
+    const code = res.data.code || 200;
+    //通过了后台拦截 校验返回的数据在res.data中
+    if (code === 500) {
+      Message.error(msg)
+      return Promise.reject(new Error(msg));
+    } else if (code != 200) {
+      Message.error(msg);
+      return Promise.reject(new Error(msg));
+    } else {
+      return res;
+    }
+  }
 }, error => {
   return Promise.reject(error)
 })
@@ -58,23 +86,18 @@ export default function ajax(url, data = {}, type = 'GET') {
       promise = axios.get(url)
     } else {
       // 发送 post 请求
-      promise = axios.post(url,data);
+      promise = axios.post(url, data);
 
     }
     //成功了调用resolve
     promise.then(response => {
-      resolve(response.data)
+      if (response) {
+        resolve(response.data)
+      }
     }).catch(error => {
       //失败了调用reject
       reject(error);
     })
   });
-}
-
-/**
- * 清除登录信息
- */
-export function clearLoginInfo() {
-  Vue.cookie.delete('token')
 }
 

@@ -38,6 +38,8 @@
 import vHeader from "./Header";
 import SideBar from "@views/sys/menu/SideBar";
 import { clearLoginInfo } from "@comm/ajax";
+import {doLogout} from '@api/sys/login';
+import Cookies from 'js-cookie'
 
 export default {
   name: "Home",
@@ -60,11 +62,12 @@ export default {
   created() {},
   methods: {
     logout() {
-      //退出登陆
-      sessionStorage.clear();
+      doLogout().then(()=>{
+        //退出登陆
+        sessionStorage.clear();
+      }).then(()=>{
       this.$router.push("/login");
-      //TODO 发出请求后台退出操作
-      clearLoginInfo();
+      })
     },
     //全屏处理(处理浏览器兼容问题)
     handleFullScreen() {

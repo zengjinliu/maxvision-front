@@ -1,6 +1,6 @@
 <template>
   <div class="dict-area">
-     <el-button  @click="back()">返回</el-button>
+    <el-button @click="back()">返回</el-button>
     <div class="search-form">
       <el-form
         :model="dictDataForm"
@@ -35,9 +35,15 @@
           <el-button type="primary" icon="el-icon-search" @click="doSearch()"
             >搜索</el-button
           >
-          <el-button type="success" @click="addOrUpdate()">添加</el-button>
+          <el-button
+            type="success"
+            v-if="HasPerms('sys_dict_data_add')"
+            @click="addOrUpdate()"
+            >添加</el-button
+          >
           <el-button
             type="danger"
+            v-if="HasPerms('sys_dict_data_del')"
             @click="del()"
             :disabled="dictCodes.length <= 0"
             >批量删除</el-button
@@ -79,15 +85,25 @@
           label="创建时间"
           align="center"
         ></el-table-column>
-        <el-table-column fixed="right"  align="center" min-width="120" label="操作">
+        <el-table-column
+          fixed="right"
+          align="center"
+          min-width="120"
+          label="操作"
+        >
           <template slot-scope="scope">
             <el-button
               type="info"
               size="mini"
+              v-if="HasPerms('sys_dict_data_update')"
               @click="addOrUpdate(scope.row.dictCode)"
               >修改</el-button
             >
-            <el-button type="danger" size="mini" @click="del(scope.row.dictCode)"
+            <el-button
+              type="danger"
+              size="mini"
+              v-if="HasPerms('sys_dict_data_del')"
+              @click="del(scope.row.dictCode)"
               >删除</el-button
             >
           </template>
@@ -117,10 +133,13 @@
 </template>
 
 <script>
+import dictDataAddOrUpdate from "./DictDataAddOrUpdate";
 
-import dictDataAddOrUpdate from './DictDataAddOrUpdate'
-
-import { queryDictDataPage, delDictData, queryAllDictType} from "@api/sys/dict";
+import {
+  queryDictDataPage,
+  delDictData,
+  queryAllDictType,
+} from "@api/sys/dict";
 
 export default {
   name: "DictData",
@@ -136,25 +155,26 @@ export default {
       total: 0, //总共多少条
       tableData: [],
       dictCodes: [],
-      dictTypeList:[],//所有字典类型
+      dictTypeList: [], //所有字典类型
       showDialog: false, //是否展示添加或者修改页
     };
   },
   components: {
-    dictDataAddOrUpdate
+    dictDataAddOrUpdate,
   },
   created() {
     this.loading = true;
     //查询所有字典类型
-    queryAllDictType().then(res=>{
-      if(res.data){
-        this.dictTypeList = res.data;
-      }
-    }).then(()=>{
-      this.dictDataForm.dictType = this.$route.params.dictType;
-      this.page();
-    })
-    
+    queryAllDictType()
+      .then((res) => {
+        if (res.data) {
+          this.dictTypeList = res.data;
+        }
+      })
+      .then(() => {
+        this.dictDataForm.dictType = this.$route.params.dictType;
+        this.page();
+      });
   },
   methods: {
     //分页
@@ -174,7 +194,9 @@ export default {
     //删除
     del(dictCode) {
       //类似Java中的map方法
-      let dictCodes = dictCode? [dictCode]: this.dictCodes.map((item) => {
+      let dictCodes = dictCode
+        ? [dictCode]
+        : this.dictCodes.map((item) => {
             return item.dictCode;
           });
       console.log(dictCodes);
@@ -183,8 +205,10 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
-          delDictData(dictCodes).then((res) => {
+      })
+        .then(() => {
+          delDictData(dictCodes)
+            .then((res) => {
               if (res.code === 200) {
                 this.$message.success("删除成功");
                 this.page();
@@ -203,7 +227,7 @@ export default {
       this.page();
     },
     //监听下来框变化
-    changListener(dictType){
+    changListener(dictType) {
       this.dictDataForm.dictType = dictType;
       this.page();
     },
@@ -220,18 +244,21 @@ export default {
       //修改
       this.showDialog = true;
       this.$nextTick(() => {
-        this.$refs["dictDataAddOrUpdate"].init(dictCode,this.dictDataForm.dictType);
+        this.$refs["dictDataAddOrUpdate"].init(
+          dictCode,
+          this.dictDataForm.dictType
+        );
       });
     },
     //重置
     reset() {
-      this.dictDataForm.dictLabel = '';
+      this.dictDataForm.dictLabel = "";
       this.page();
     },
     //返回
-    back(){
-      this.$router.push('/dict')
-    }
+    back() {
+      this.$router.push("/dict");
+    },
   },
 };
 </script>

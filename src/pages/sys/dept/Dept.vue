@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="success" icon="el-icon-search" @click="doSearch">搜索</el-button>
-          <el-button type="primary" @click="addOrUpdate('','add')">添加</el-button>
+          <el-button type="primary" v-if="HasPerms('sys_dept_add')" @click="addOrUpdate('','add')">添加</el-button>
           <el-button type="info" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
@@ -36,9 +36,9 @@
         <el-table-column prop="nodeData.orderNum" align="center"  label="排序号"></el-table-column>
         <el-table-column fixed="right"  align="center" min-width="120" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="addOrUpdate(scope.row.id,'add')" >添加</el-button>
-            <el-button type="info" size="mini" @click="addOrUpdate(scope.row.id,'edit')" >修改</el-button>
-            <el-button type="danger" size="mini" @click="deleteHandle(scope.row)" >删除</el-button>
+            <el-button type="primary" size="mini" v-if="HasPerms('sys_dept_add')" @click="addOrUpdate(scope.row.id,'add')" >添加</el-button>
+            <el-button type="info" size="mini" v-if="HasPerms('sys_dept_update')" @click="addOrUpdate(scope.row.id,'edit')" >修改</el-button>
+            <el-button type="danger" size="mini" v-if="HasPerms('sys_dept_del')" @click="deleteHandle(scope.row)" >删除</el-button>
           </template>
         </el-table-column>  
       </el-table>

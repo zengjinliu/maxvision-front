@@ -19,8 +19,7 @@ export const doLogin = (params) => ajax(api.login.doLogin, params, 'POST');
 export const doLogout = () => ajax(api.login.doLogout);
 //4.修改密码
 export const updatePwd = (params) => ajax(api.login.updatePwd, params, 'POST')
-//5.请求验证码
-export const requireMsgCode = (params) => ajax(api.login.requireMsgCode, params, 'POST')
+
 
 
 

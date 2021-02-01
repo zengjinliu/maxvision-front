@@ -81,6 +81,7 @@ const router = new VueRouter({
 
 //路由导航守卫
 router.beforeEach((to, from ,next)=>{
+  
   if(to.path!="/login"){
     //校验
     const user = sessionStorage.getItem('user');

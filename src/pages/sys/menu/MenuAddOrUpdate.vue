@@ -27,9 +27,6 @@
           label="排序号"
         ></el-input-number>
       </el-form-item>
-      <!-- <el-form-item label="菜单图标" prop="icon">
-        <el-input v-model="dataForm.icon" placeholder="菜单图标名称"></el-input>
-      </el-form-item> -->
       <el-form-item  label="菜单图标" prop="icon" >
         <el-row>
           <el-col :span="22">
@@ -57,7 +54,7 @@
       <el-form-item label="权限" prop="perms">
         <el-input
           v-model="dataForm.perms"
-          placeholder="多个用逗号分隔, 如: user:list,user:create"
+          placeholder="多个用逗号分隔, 如: sys_user_add,sys_user_del"
         ></el-input>
       </el-form-item>
       <el-form-item label="上级菜单" prop="parentName">

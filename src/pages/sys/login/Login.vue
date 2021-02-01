@@ -3,7 +3,7 @@
     <div class="login-area">
       <div class="login-head">
         <div class="login-logo">
-           <img src="../../../assert/img/sys/logo.png">
+          <img src="../../../assert/img/sys/logo.png" />
         </div>
       </div>
       <el-form
@@ -17,18 +17,18 @@
         <el-form-item prop="username">
           <el-input v-model="user.username" placeholder="用户名"></el-input>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item prop="pwd">
           <el-input
-            v-model="user.password"
+            v-model="user.pwd"
             type="password"
             placeholder="密码"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="password" class="remember">
-          <el-checkbox>remember me</el-checkbox>
+        <el-form-item prop="rememberMe" class="remember">
+          <el-checkbox v-model="user.rememberMe">记住密码</el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button class="login-btn" type="primary" @click="login()">
+          <el-button :loading="loading" class="login-btn" type="primary" @click="login()">
             登录
           </el-button>
         </el-form-item>
@@ -38,112 +38,134 @@
 </template>
 
 <script>
-  import {doLogin} from "@api/sys/login";
-  import {getAllPerms} from "@api/sys/user";
-  import router from "@/router";
+import { doLogin } from "@api/sys/login";
+import Cookies from 'js-cookie'
+import {encrypt,decrypt} from '@/utils/RSA'
 
-  export default {
-    name: "Login",
-    data() {
-      return {
-        user: {
-          username: "",
-          password: "",
-        },
-        rules: {
-          username: [
-            {required: true, message: "用户名不能为空", trigger: "blur"},
-          ],
-          password: [
-            {required: true, message: "密码不能为空", trigger: "blur"},
-          ],
-        },
+
+export default {
+  name: "Login",
+  data() {
+    return {
+      user: {
+        username: "",
+        pwd: '',
+        password:'',
+        rememberMe: false,
+      },
+      loading:false,
+      rules: {
+        username: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+        ],
+      },
+      
+    };
+  },
+  created() {
+    this.getCookie();
+  },
+  methods: {
+    //获取记住我
+    getCookie() {
+      const username = Cookies.get("username");
+      const pwd = Cookies.get("pwd");
+      const rememberMe = Cookies.get("rememberMe");
+      this.user = {
+        username: username === undefined ? this.user.username : username,
+        pwd:pwd === undefined ? this.user.pwd : decrypt(pwd),
+        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
       };
     },
-    created() {
-    },
-    methods: {
-      login() {
-        //登录
-        this.$refs["loginForm"].validate((valid) => {
-          if (valid) {
-            doLogin(this.user).then((res) => {
-              if (res.code === 200) {
-                let user = {
-                  loginName: res.data.loginName,
-                  userName: res.data.userName,
-                  userId: res.data.userId,
-                };
-                this.$store.dispatch("saveUserInfo", user);
-                sessionStorage.setItem('user',user);
-                this.$router.replace("/home");
-                //登陆成功后将权限信息保存
-                // this.getAllPerms();
-              } else {
-                this.$message.error(res.msg);
-              }
-            });
+    //登录
+    login() {
+      this.$refs["loginForm"].validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          //记住密码功能
+          if (this.user.rememberMe) {
+            Cookies.set("username", this.user.username, { expires: 30 });
+            Cookies.set("pwd", encrypt(this.user.pwd), { expires: 30 });
+            Cookies.set('rememberMe', this.user.rememberMe, { expires: 30 });
+          } else {
+            Cookies.remove("username");
+            Cookies.remove("pwd");
+            Cookies.remove('rememberMe');
           }
-        });
-      },
-      getAllPerms() {
-        getAllPerms()
-          .then((res) => {
+          //对密码进行MD5加密
+          this.user.password = this.$md5(this.user.pwd)
+        
+          doLogin(this.user).then((res) => {
             if (res.code === 200) {
-              //将权限信息进行缓存
-              sessionStorage.setItem("permissions", res.datas);
+              const data =  res.data;
+              const user = data.user;
+              let userInfo = {
+                loginName: user.loginName,
+                userName: user.userName,
+                userId: user.userId,
+                perms: data.perms
+              };
+              this.$store.dispatch("saveUserInfo", userInfo);
+              sessionStorage.setItem('user',JSON.stringify(userInfo));
+              this.$router.replace("/home");
+            } else {
+              this.loading = false;
             }
-          })
-          .catch((err) => {
-            router.push("/login");
+          }).catch(()=>{
+            this.loading = false;
           });
-      },
+        }
+      });
     },
-  };
+  },
+};
 </script>
 
 <style>
-  .login-container {
-    position: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;
-    background-size: cover; 
-  }
-  .login-area{
-    min-width: 300px;
-    background-color: #fff;
-  }
-  .login-header{
-    display: flex;
-    justify-content: center;
-  }
-  .login-logo{
-    background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;
-    background-size: contain;
-  }
-  .login-logo img{
-    display: block;
-	  margin: auto;
-	  height: 45px;
-  }
-  .login-form {
-    background-color: #ffffff;
-    padding: 50px 50px 10px 50px;
+.login-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;
+  background-size: cover;
+}
+.login-area {
+  min-width: 300px;
+  background-color: #fff;
+}
+.login-header {
+  display: flex;
+  justify-content: center;
+}
+.login-logo {
+  background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;
+  background-size: contain;
+}
+.login-logo img {
+  display: block;
+  margin: auto;
+  height: 45px;
+}
+.login-form {
+  background-color: #ffffff;
+  padding: 50px 50px 10px 50px;
 
-    min-width: 250px;
-  }
-  .login-btn{
-    width: 100%;
-  }
-  .remember{
-    float: left;
-  }
+  min-width: 250px;
+}
+.login-btn {
+  width: 100%;
+}
+.remember {
+  float: left;
+}
 </style>
 

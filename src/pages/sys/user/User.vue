@@ -13,10 +13,13 @@
         </el-form-item>
         <el-form-item>
           <el-button type="success" icon="el-icon-search" @click="doSearch()">搜索</el-button>
-          <el-button type="primary" @click="addOrUpdate()">添加</el-button>
+          <el-button type="primary"
+          v-if="HasPerms('sys_user_add')"
+           @click="addOrUpdate()">添加</el-button>
           <el-button
             type="danger"
             @click="del()"
+            v-if="HasPerms('sys_user_del')"
             :disabled="userIds.length <= 0"
             >批量删除</el-button
           >
@@ -65,11 +68,14 @@
             <el-button
               type="info"
               size="mini"
+              v-if="HasPerms('sys_user_update')"
               @click="addOrUpdate(scope.row.userId)"
               >修改</el-button>
+               <!-- v-if="HasPerms('sys_user_del')" -->
             <el-button
               type="danger"
               size="mini"
+             
               @click="del(scope.row.userId)"
               >删除</el-button>
           </template>

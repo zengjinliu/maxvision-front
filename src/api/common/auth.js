@@ -5,7 +5,8 @@
  * @constructor
  */
 export function Auth (key) {
-  let arr = sessionStorage.getItem('permissions').split(',');
+  var user = JSON.parse(sessionStorage.getItem("user"));
+  let arr = user.perms;
   return arr.includes(key);
 }
 

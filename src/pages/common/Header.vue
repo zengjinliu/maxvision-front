@@ -24,7 +24,6 @@
 <script>
   import UpdatePassword from "./UpdatePassword";
   import {doLogout} from "@api/sys/login";
-  import {clearLoginInfo} from "@comm/ajax";
 
   export default {
     name: "Header",
@@ -91,7 +90,6 @@
         }).then(()=>{
           doLogout();
           //清除cookie信息
-          clearLoginInfo();
         })
       },
       //修改密码

@@ -13,7 +13,6 @@ export const api = {
     delUser:'/api/sys/user/del',//删除用户
     updateUser:'/api/sys/user/update',//更新用户
     checkNameExit:'/api/sys/user/checkNameExist',//校验登陆账户名是否已经存在
-    queryCurrentUserPerms:'/api/sys/user/queryAllPerms',//查询用户的所有权限
   },
   menu:{//菜单模块
     queryTreeMenu:'/api/sys/menu/queryTreeMenu',//根据用户id查询所有树形菜单

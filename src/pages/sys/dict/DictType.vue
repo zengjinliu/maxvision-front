@@ -18,8 +18,17 @@
           <el-button type="primary" icon="el-icon-search" @click="doSearch"
             >搜索</el-button
           >
-          <el-button type="success" @click="addOrUpdate()">添加</el-button>
-          <el-button type="danger" @click="del()" :disabled="dictIds.length <= 0"
+          <el-button
+            type="success"
+            v-if="HasPerms('sys_dict_type_add')"
+            @click="addOrUpdate()"
+            >添加</el-button
+          >
+          <el-button
+            type="danger"
+            v-if="HasPerms('sys_dict_type_del')"
+            @click="del()"
+            :disabled="dictIds.length <= 0"
             >批量删除</el-button
           >
           <el-button type="info" @click="reset">重置</el-button>
@@ -63,11 +72,12 @@
           label="创建时间"
           align="center"
         ></el-table-column>
-        <el-table-column fixed="right"  align="center"  label="操作">
+        <el-table-column fixed="right" align="center" label="操作">
           <template slot-scope="scope">
             <el-button
               type="info"
               size="mini"
+              v-if="HasPerms('sys_dict_type_update')"
               @click="addOrUpdate(scope.row.dictId)"
               >修改</el-button
             >
@@ -77,7 +87,7 @@
               @click="goDictData(scope.row.dictType)"
               >列表</el-button
             >
-            <el-button type="danger" size="mini" @click="del(scope.row.dictId)"
+            <el-button type="danger" v-if="HasPerms('sys_dict_type_del')" size="mini" @click="del(scope.row.dictId)"
               >删除</el-button
             >
           </template>
@@ -107,8 +117,8 @@
 </template>
 
 <script>
-import DictTypeAddOrUpdate from './DictTypeAddOrUpdate';
-import { queryDictTypePage,delDictType } from "@api/sys/dict";
+import DictTypeAddOrUpdate from "./DictTypeAddOrUpdate";
+import { queryDictTypePage, delDictType } from "@api/sys/dict";
 
 export default {
   name: "DictType",
@@ -152,7 +162,9 @@ export default {
     },
     del(dictId) {
       //类似Java中的map方法
-      let dictIds = dictId? [dictId]: this.dictIds.map((item) => {
+      let dictIds = dictId
+        ? [dictId]
+        : this.dictIds.map((item) => {
             return item.dictId;
           });
       console.log(dictIds);
@@ -161,8 +173,10 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
-          delDictType(dictIds).then((res) => {
+      })
+        .then(() => {
+          delDictType(dictIds)
+            .then((res) => {
               if (res.code === 200) {
                 this.$message.success("删除成功");
                 this.page();
@@ -203,9 +217,9 @@ export default {
       this.page();
     },
     //去字典值页面(dialog)
-    goDictData(dictType){
-      this.$router.push('/dictData/'+dictType);
-    }
+    goDictData(dictType) {
+      this.$router.push("/dictData/" + dictType);
+    },
   },
 };
 </script>
