@@ -19,7 +19,8 @@ export const doLogin = (params) => ajax(api.login.doLogin, params, 'POST');
 export const doLogout = () => ajax(api.login.doLogout);
 //4.修改密码
 export const updatePwd = (params) => ajax(api.login.updatePwd, params, 'POST')
-
+//5.在修改密码时校验原密码是否正确
+export const checkPwd = (params) =>ajax(api.login.checkPwd,params,'POST');
 
 
 

@@ -55,9 +55,6 @@ axios.interceptors.response.use(res => {
     if (code === 500) {
       Message.error(msg)
       return Promise.reject(new Error(msg));
-    } else if (code != 200) {
-      Message.error(msg);
-      return Promise.reject(new Error(msg));
     } else {
       return res;
     }

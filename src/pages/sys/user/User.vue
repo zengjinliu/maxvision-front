@@ -75,7 +75,7 @@
             <el-button
               type="danger"
               size="mini"
-             
+             v-if="HasPerms('sys_user_del')"
               @click="del(scope.row.userId)"
               >删除</el-button>
           </template>

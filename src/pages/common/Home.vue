@@ -21,7 +21,7 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>修改密码</el-dropdown-item>
+            <el-dropdown-item @click.native="modifyPassword()">修改密码</el-dropdown-item>
             <el-dropdown-item @click.native="logout()">退出 </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -30,16 +30,19 @@
         <!-- 子路由出口 -->
         <router-view />
       </el-main>
+      <update-password v-if="showDialog" ref="updatePassword"></update-password>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import vHeader from "./Header";
 import SideBar from "@views/sys/menu/SideBar";
-import { clearLoginInfo } from "@comm/ajax";
+import UpdatePassword from './UpdatePassword';
+
 import {doLogout} from '@api/sys/login';
-import Cookies from 'js-cookie'
+
+
+
 
 export default {
   name: "Home",
@@ -47,6 +50,7 @@ export default {
     return {
       collapse: false, //收缩侧边栏
       fullScreen: false, //全屏
+      showDialog:false,//展示修改密码弹窗
     };
   },
   computed: {
@@ -56,8 +60,8 @@ export default {
   },
 
   components: {
-    vHeader,
     SideBar,
+    UpdatePassword
   },
   created() {},
   methods: {
@@ -95,6 +99,14 @@ export default {
       }
       this.fullScreen = !this.fullScreen;
     },
+    //修改密码
+    modifyPassword(){
+      this.showDialog = true;
+      
+      this.$nextTick(()=>{
+        this.$refs.updatePassword.init();
+      })
+    }
   },
 };
 </script>

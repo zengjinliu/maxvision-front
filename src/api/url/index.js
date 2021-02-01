@@ -4,6 +4,7 @@ export const api = {
   login: {//登陆模块
     doLogin: '/api/sys/login',//登陆
     doLogout: '/api/sys/logout',//登出
+    checkPwd:'/api/sys/checkPwd',//校验密码是否正确
     updatePwd: '/api/sys/user/updatePwd',//修改密码
   },
   user:{//用户模块
