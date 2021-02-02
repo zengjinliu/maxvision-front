@@ -1,7 +1,7 @@
 <template>
   <el-container class="layout-container">
-    <el-aside class="aside" width="auto">
-      <side-bar class="aside-menu" :collapse="collapse" />
+    <el-aside :width="collapse ? '60px' : '180px'">
+      <side-bar :collapse="collapse" />
     </el-aside>
     <el-container>
       <el-header class="header">
@@ -11,9 +11,10 @@
               'el-icon-s-fold': collapse,
               'el-icon-s-unfold': !collapse,
             }"
-            @click="collapse = !collapse"
+            @click="toolsClick()"
           ></i>
-          <i class="el-icon-rank"  @click="handleFullScreen"></i>
+          <i class="el-icon-rank" @click="handleFullScreen"></i>
+         
         </div>
         <el-dropdown>
           <div class="avatar-wrap">
@@ -21,7 +22,9 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="modifyPassword()">修改密码</el-dropdown-item>
+            <el-dropdown-item @click.native="modifyPassword()"
+              >修改密码</el-dropdown-item
+            >
             <el-dropdown-item @click.native="logout()">退出 </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -37,12 +40,9 @@
 
 <script>
 import SideBar from "@views/sys/menu/SideBar";
-import UpdatePassword from './UpdatePassword';
+import UpdatePassword from "./UpdatePassword";
 
-import {doLogout} from '@api/sys/login';
-
-
-
+import { doLogout } from "@api/sys/login";
 
 export default {
   name: "Home",
@@ -50,7 +50,7 @@ export default {
     return {
       collapse: false, //收缩侧边栏
       fullScreen: false, //全屏
-      showDialog:false,//展示修改密码弹窗
+      showDialog: false, //展示修改密码弹窗
     };
   },
   computed: {
@@ -61,17 +61,19 @@ export default {
 
   components: {
     SideBar,
-    UpdatePassword
+    UpdatePassword,
   },
   created() {},
   methods: {
     logout() {
-      doLogout().then(()=>{
-        //退出登陆
-        sessionStorage.clear();
-      }).then(()=>{
-      this.$router.push("/login");
-      })
+      doLogout()
+        .then(() => {
+          //退出登陆
+          sessionStorage.clear();
+        })
+        .then(() => {
+          this.$router.push("/login");
+        });
     },
     //全屏处理(处理浏览器兼容问题)
     handleFullScreen() {
@@ -100,13 +102,18 @@ export default {
       this.fullScreen = !this.fullScreen;
     },
     //修改密码
-    modifyPassword(){
+    modifyPassword() {
       this.showDialog = true;
-      
-      this.$nextTick(()=>{
+
+      this.$nextTick(() => {
         this.$refs.updatePassword.init();
-      })
-    }
+      });
+    },
+    //收缩菜单
+    toolsClick() {
+      this.collapse = !this.collapse;
+    },
+    
   },
 };
 </script>
@@ -119,12 +126,12 @@ export default {
   top: 0;
   bottom: 0;
 }
-.aside {
-  background-color: #d3dce6;
+.el-aside {
+  background-color: rgb(0, 32, 51);
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
-.aside-menu {
-  height: 100%;
-}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -144,11 +151,11 @@ export default {
 .main {
   background-color: #e9eef3;
 }
-.tools{
+.tools {
   display: flex;
   width: 100px;
 }
-.tools i{ 
+.tools i {
   font-size: 25px;
   margin-right: 20px;
 }

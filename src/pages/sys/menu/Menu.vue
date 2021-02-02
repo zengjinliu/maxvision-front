@@ -116,7 +116,6 @@ export default {
   },
   methods: {
     getMenuList() {
-      console.log("----------->menu refresh");
       let userId = this.$store.state.user.userId;
       queryTreeMenu(userId).then((res) => {
         if (res.code === 200) {
