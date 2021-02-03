@@ -160,20 +160,14 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      })
-        .then(() => {
-          delUser(userIds)
-            .then((res) => {
+      }).then(() => {
+          delUser(userIds).then((res) => {
               if (res.code === 200) {
                 this.$message.success("删除成功");
                 this.page();
               }
             })
-            .catch((err) => {
-              this.$message.error(err);
-            });
-        })
-        .catch(() => {});
+        }).catch(() => {});
     },
     doSearch() {
       //条件搜索

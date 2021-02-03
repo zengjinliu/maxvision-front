@@ -57,7 +57,6 @@ export default {
   },
   methods: {
     requireItems() {
-      console.log("----------------->");
       let userId = this.$store.state.user.userId;
       queryTreeMenu(userId).then((res) => {
         if (res.code === 200) {

@@ -196,7 +196,6 @@ export default {
       this.page();
     },
     addOrUpdate(postId) {
-      console.log("--------->postId:" + postId);
       //修改
       this.showAddOrUpdate = true;
       this.$nextTick(() => {

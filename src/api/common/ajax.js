@@ -46,7 +46,7 @@ axios.interceptors.response.use(res => {
       }).catch(() => { });
     } else if (errorCode === '403') {
       Message.error('无操作权限')
-      return Promise.reject(new Error(msg));
+      return Promise.reject(new Error('msg')).catch(e=>{});
     }
   } else {
     const msg = res.data.msg || '';
@@ -54,13 +54,13 @@ axios.interceptors.response.use(res => {
     //通过了后台拦截 校验返回的数据在res.data中
     if (code === 500) {
       Message.error(msg)
-      return Promise.reject(new Error(msg));
+      return Promise.reject(new Error(msg)).catch(e=>{});
     } else {
       return res;
     }
   }
 }, error => {
-  return Promise.reject(error)
+  return Promise.reject(error).catch(e=>{});
 })
 
 export default function ajax(url, data = {}, type = 'GET') {
