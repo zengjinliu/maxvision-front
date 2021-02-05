@@ -1,7 +1,9 @@
 <template>
   <div class="dict-area">
-    <el-button @click="back()">返回</el-button>
     <div class="search-form">
+       <i class="back" @click="back()">
+        <icon-svg name="guanbi"></icon-svg>
+      </i>
       <el-form
         :model="dictDataForm"
         :inline="true"

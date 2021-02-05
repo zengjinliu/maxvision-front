@@ -1,6 +1,10 @@
 <template>
   <div class="user-area">
     <div class="search-form">
+
+      <i class="back" @click="back()">
+        <icon-svg name="guanbi"></icon-svg>
+      </i>
       <el-form
         :model="dataForm"
         :inline="true"
@@ -156,9 +160,14 @@ export default {
         this.dataForm.endTime = this.date[1];
       }
     },
+    //返回
+    back() {
+      this.$router.push("/syslog");
+    },
   },
 };
 </script>
 
 <style scoped>
+
 </style>

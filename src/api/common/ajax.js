@@ -8,8 +8,7 @@ ajax请求函数封装模块
 
 import axios from 'axios'
 import VueRouter from '../../router'
-import Cookies from 'js-cookie'
-import { Notification, MessageBox, Message } from 'element-ui'
+import {MessageBox, Message } from 'element-ui'
 
 
 //请求地址
@@ -29,7 +28,6 @@ axios.interceptors.request.use(config => {
  * 响应拦截
  */
 axios.interceptors.response.use(res => {
-
   //返回错误码在请求头中
   const errorCode = res.headers.code
   if (errorCode) {

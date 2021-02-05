@@ -22,3 +22,9 @@ body .el-table th.gutter{
 .search-form{
   text-align: left;
 }
+.back{
+  float: right;
+  font-size: 25px;
+  cursor: pointer;
+  padding: 5px;
+}
