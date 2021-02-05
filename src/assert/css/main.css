@@ -28,3 +28,8 @@ body .el-table th.gutter{
   cursor: pointer;
   padding: 5px;
 }
+/* 容器滚动 */
+.container-table{
+  min-width: 900px;
+  overflow-x: auto;
+}

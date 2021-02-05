@@ -47,7 +47,11 @@
           prop="status"
           label="登陆状态"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            {{scope.row.status=='0'?'登陆成功':'登陆失败'}}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="os"
           label="操作系统"

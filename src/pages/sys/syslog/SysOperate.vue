@@ -1,7 +1,6 @@
 <template>
   <div class="user-area">
     <div class="search-form">
-
       <i class="back" @click="back()">
         <icon-svg name="guanbi"></icon-svg>
       </i>

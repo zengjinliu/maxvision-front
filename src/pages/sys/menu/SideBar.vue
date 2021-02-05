@@ -84,6 +84,7 @@ export default {
   margin: 0;
   padding-left: 0;
   background-color: #fff;
+  font-size: 14px;
 }
 .sidebar-title {
   height: 60px;
@@ -104,6 +105,7 @@ export default {
   height: calc(100% - 60px);
   overflow-x: hidden;
   overflow-y: scroll;
+  
 }
 
 .sidebar-area::-webkit-scrollbar {
@@ -125,6 +127,7 @@ export default {
 .el-submenu,
 .el-menu-item {
   text-align: left;
+  font-size: 14px;
 }
 
 .aside::-webkit-scrollbar {
