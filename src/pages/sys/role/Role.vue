@@ -5,7 +5,6 @@
         :model="roleForm"
         :inline="true"
         ref="roleForm"
-        label-width="100px"
         class="demo-form-inline"
       >
         <el-form-item label="角色名称" prop="roleName">
@@ -203,7 +202,5 @@ export default {
 </script>
 
 <style scoped>
-.search-form {
-  float: left;
-}
+
 </style>

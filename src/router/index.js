@@ -55,6 +55,14 @@ let routes = [
         path: '/dictData/:dictType',
         component: resolve => require(['@views/sys/dict/DictData'], resolve),
       },
+      {
+        path: '/syslog',
+        component: resolve => require(['@views/sys/syslog/Syslog'], resolve),
+      },
+      {
+        path: '/operate',
+        component: resolve => require(['@views/sys/syslog/SysOperate'], resolve),
+      },
 
     ]
   },

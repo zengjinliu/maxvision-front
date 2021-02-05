@@ -23,7 +23,6 @@ export  function exportExcel(url,fileName,options = {}) {
         let blob = new Blob([response.data], {
           type: 'application/vnd.ms-excel'
         })
-        console.log('----->blob' +blob)
         let name = fileName + '.xlsx';
         if (window.navigator.msSaveOrOpenBlob) {
           // console.log(2)

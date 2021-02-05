@@ -8,52 +8,56 @@
 </template>
 
 <script>
+import ws from "@/api/common/websocket";
+
 export default {
   name: "HomeIndex",
   data() {
     return {
-        websock:''
+      websocket: "",
     };
   },
-  created(){
-      //建立websocket连接
-      // this.initWebSocket();
+  created() {
+    let config = {
+      url: "ws://127.0.0.1:8080/demo.ws",
+      onmessage: this.wsonmessage,
+      onopen: this.wsonopen,
+      onerror: this.wsonerror,
+      onclose: this.wsonclose,
+    };
+    this.$ws.init(config);
+    this.websocket = this.$ws.webSocket;
   },
-  destroyed(){
-      //离开路由之后断开websocket连接
-      this.websock.close();
+  mounted() {},
+  destroyed() {
+    //离开路由之后断开websocket连接
+    this.websocket.close();
   },
-  methods:{
-      initWebSocket(){ //初始化weosocket
-        const wsuri = "ws://127.0.0.1:8080/demo.ws";
-        this.websock = new WebSocket(wsuri);
-        this.websock.onmessage = this.websocketonmessage;
-        this.websock.onopen = this.websocketonopen;
-        this.websock.onerror = this.websocketonerror;
-        this.websock.onclose = this.websocketclose;
-      },
-      websocketonopen(){ //连接建立之后执行send方法发送数据
-        let actions = {"test":"12345"};
-        this.websocketsend(JSON.stringify(actions));
-      },
-      websocketonerror(){//连接建立失败重连
-        this.initWebSocket();
-      },
-      websocketonmessage(e){ //数据接收
-        const redata = JSON.parse(e.data);
-      },
-      websocketsend(Data){//数据发送
-        this.websock.send(Data);
-      },
-      websocketclose(e){  //关闭
-        console.log('断开连接',e);
-      },
-      sendMsg(){
-          let data ="hello world"
-          this.websocketsend(data);
-      }
-
-  }
+  methods: {
+    //建立连接
+    wsonopen(e) {
+      this.wssend('hello I am client')
+    },
+    //接收数据
+    wsonmessage(e) {
+      console.log('e :>> ', e.data);
+    },
+    //关闭连接
+    wsonclose(e) {
+      this.websocket.close();
+    },
+    //错误
+    wsonerror(e) {
+      this.$ws.reconnect();
+    },
+    //发送数据
+    wssend(msg) {
+      this.websocket.send(msg);
+    },
+    sendMsg(){
+      
+    }
+  },
 };
 </script>
 

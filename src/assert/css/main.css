@@ -1,19 +1,24 @@
-/* .content-box{
-  position: absolute;
-  left: 200px;
-  right: 0;
-  top: 50px;
-  bottom: 0;
-  overflow-y: scroll;
-  -webkit-transition: left .3s ease-in-out;
-  transition: left .3s ease-in-out;
-  background-color: #f0f0f0;
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+ }
+html,body,#app{
+  height: 100%;
 }
-.content-collapse{
-  left: 60px;
+body{
+    margin: auto;
+    padding: 0;
+    height: 100%;
 }
-
-.page-area{
-  margin-top: 5px;
-  text-align: right;
-} */
+body .el-table th.gutter{
+  display: table-cell!important;
+}
+.el-pagination{
+  float: right;
+}
+.search-form{
+  text-align: left;
+}

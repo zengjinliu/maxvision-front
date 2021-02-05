@@ -21,6 +21,10 @@ export const doLogout = () => ajax(api.login.doLogout);
 export const updatePwd = (params) => ajax(api.login.updatePwd, params, 'POST')
 //5.在修改密码时校验原密码是否正确
 export const checkPwd = (params) =>ajax(api.login.checkPwd,params,'POST');
+//6.分页查询登陆日志信息
+export const loginInfoPage = (params) => ajax(api.login.loginInfoPage, params, 'POST');
+//7.分页查询操作日志信息
+export const operateInfoPage = (params) => ajax(api.login.operatorPage, params, 'POST');
 
 
 

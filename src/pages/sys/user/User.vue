@@ -5,7 +5,6 @@
         :model="userForm"
         :inline="true"
         ref="userForm"
-        label-width="100px"
         class="demo-form-inline"
       >
         <el-form-item label="姓名" prop="userName">
@@ -203,7 +202,5 @@ export default {
 </script>
 
 <style scoped>
-.search-form {
-  float: left;
-}
+
 </style>

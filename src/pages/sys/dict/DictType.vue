@@ -5,7 +5,6 @@
         :model="dictTypeForm"
         :inline="true"
         ref="dictTypeForm"
-        label-width="100px"
         class="demo-form-inline"
       >
         <el-form-item label="字典名称" prop="dictName">
@@ -225,7 +224,5 @@ export default {
 </script>
 
 <style scoped>
-.search-form {
-  float: left;
-}
+
 </style>

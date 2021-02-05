@@ -1,11 +1,9 @@
 <template>
   <div class="login-container">
     <div class="login-area">
-      <div class="login-head">
-        <div class="login-logo">
-          <img src="../../../assert/img/sys/logo.png" />
-        </div>
-      </div>
+      <i class="title">
+        <img src="../../../assert/img/sys/logo.png" />
+      </i>
       <el-form
         class="login-form"
         :model="user"
@@ -25,23 +23,30 @@
           ></el-input>
         </el-form-item>
         <el-form-item prop="rememberMe" class="remember">
-          <el-checkbox v-model="user.rememberMe">记住密码</el-checkbox>
+          <el-checkbox size="small" v-model="user.rememberMe">记住密码</el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button :loading="loading" class="login-btn" type="primary" @click="login()">
+          <el-button
+            :loading="loading"
+            class="login-btn"
+            type="primary"
+            @click="login()"
+          >
             登录
           </el-button>
         </el-form-item>
       </el-form>
+    </div>
+    <div class="footer">
+      <span>Copyright © 2021 maxvision All Rights Reserved.</span>
     </div>
   </div>
 </template>
 
 <script>
 import { doLogin } from "@api/sys/login";
-import Cookies from 'js-cookie'
-import {encrypt,decrypt} from '@/utils/RSA'
-
+import Cookies from "js-cookie";
+import { encrypt, decrypt } from "@/utils/RSA";
 
 export default {
   name: "Login",
@@ -49,11 +54,11 @@ export default {
     return {
       user: {
         username: "",
-        pwd: '',
-        password:'',
+        pwd: "",
+        password: "",
         rememberMe: false,
       },
-      loading:false,
+      loading: false,
       rules: {
         username: [
           { required: true, message: "用户名不能为空", trigger: "blur" },
@@ -62,7 +67,6 @@ export default {
           { required: true, message: "密码不能为空", trigger: "blur" },
         ],
       },
-      
     };
   },
   created() {
@@ -76,7 +80,7 @@ export default {
       const rememberMe = Cookies.get("rememberMe");
       this.user = {
         username: username === undefined ? this.user.username : username,
-        pwd:pwd === undefined ? this.user.pwd : decrypt(pwd),
+        pwd: pwd === undefined ? this.user.pwd : decrypt(pwd),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
       };
     },
@@ -89,34 +93,37 @@ export default {
           if (this.user.rememberMe) {
             Cookies.set("username", this.user.username, { expires: 30 });
             Cookies.set("pwd", encrypt(this.user.pwd), { expires: 30 });
-            Cookies.set('rememberMe', this.user.rememberMe, { expires: 30 });
+            Cookies.set("rememberMe", this.user.rememberMe, { expires: 30 });
           } else {
             Cookies.remove("username");
             Cookies.remove("pwd");
-            Cookies.remove('rememberMe');
+            Cookies.remove("rememberMe");
           }
           //对密码进行MD5加密
-          this.user.password = this.$md5(this.user.pwd)
-        
-          doLogin(this.user).then((res) => {
-            if (res.code === 200) {
-              const data =  res.data;
-              const user = data.user;
-              let userInfo = {
-                loginName: user.loginName,
-                userName: user.userName,
-                userId: user.userId,
-                perms: data.perms
-              };
-              this.$store.dispatch("saveUserInfo", userInfo);
-              sessionStorage.setItem('user',JSON.stringify(userInfo));
-              this.$router.replace("/home");
-            } else {
+          this.user.password = this.$md5(this.user.pwd);
+
+          doLogin(this.user)
+            .then((res) => {
+              if (res.code === 200) {
+                const data = res.data;
+                const user = data.user;
+                let userInfo = {
+                  loginName: user.loginName,
+                  userName: user.userName,
+                  userId: user.userId,
+                  perms: data.perms,
+                  menus: data.menuTree,
+                };
+                this.$store.dispatch("saveUserInfo", userInfo);
+                sessionStorage.setItem("user", JSON.stringify(userInfo));
+                this.$router.replace("/home");
+              } else {
+                this.loading = false;
+              }
+            })
+            .catch(() => {
               this.loading = false;
-            }
-          }).catch(()=>{
-            this.loading = false;
-          });
+            });
         }
       });
     },
@@ -142,22 +149,10 @@ export default {
   min-width: 300px;
   background-color: #fff;
 }
-.login-header {
-  display: flex;
-  justify-content: center;
-}
-.login-logo {
-  background: url("~@/assert/img/sys/login-bj.jpg") no-repeat;
-  background-size: contain;
-}
-.login-logo img {
-  display: block;
-  margin: auto;
-  height: 45px;
-}
+
 .login-form {
   background-color: #ffffff;
-  padding: 50px 50px 10px 50px;
+  padding: 30px 40px 0px 40px;
 
   min-width: 250px;
 }
@@ -166,6 +161,19 @@ export default {
 }
 .remember {
   float: left;
+}
+
+.footer {
+  height: 40px;
+  line-height: 40px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: black;
+  font-family: Arial;
+  font-size: 12px;
+  letter-spacing: 1px;
 }
 </style>
 

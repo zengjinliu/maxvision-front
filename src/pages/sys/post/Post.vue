@@ -5,7 +5,6 @@
         :model="postForm"
         :inline="true"
         ref="postForm"
-        label-width="100px"
         class="demo-form-inline"
       >
         <el-form-item label="岗位名称" prop="postName">
@@ -212,7 +211,5 @@ export default {
 </script>
 
 <style scoped>
-.search-form {
-  float: left;
-}
+
 </style>

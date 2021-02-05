@@ -6,7 +6,6 @@
         :model="deptForm"
         :inline="true"
         ref="deptForm"
-        label-width="100px"
         class="demo-form-inline"
       >
         <el-form-item label="部门名称" prop="deptName">
@@ -127,7 +126,5 @@ import {queryTreeDept,delDept,queryDeptByName} from "@api/sys/dept";
 
 </script>
 <style  scoped>
- .search-form{
-    float: left;
-  }
+
 </style>

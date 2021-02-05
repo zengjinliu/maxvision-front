@@ -21,16 +21,17 @@
         <el-submenu v-for="item in menus" :key="item.id" :index="item.url">
           <template slot="title">
             <icon-svg :name="item.icon"></icon-svg>
-            <span >{{ item.name }}</span>
+            <span>{{ item.name }}</span>
           </template>
           <!-- 二级菜单 -->
           <template v-for="itemChild in item.children">
             <el-menu-item
               class="submenu"
+              style="padding-left:55px"
               :index="itemChild.url"
               :key="itemChild.id"
             >
-              <span  slot="title">{{ itemChild.name }}</span>
+              <span slot="title">{{ itemChild.name }}</span>
             </el-menu-item>
           </template>
         </el-submenu>
@@ -57,12 +58,14 @@ export default {
   },
   methods: {
     requireItems() {
-      let userId = this.$store.state.user.userId;
-      queryTreeMenu(userId).then((res) => {
-        if (res.code === 200) {
-          this.menus = res.data;
-        }
-      });
+      let user = JSON.parse(sessionStorage.getItem("user"));
+      this.menus = user.menus;
+      // let userId = this.$store.state.user.userId;
+      // queryTreeMenu(userId).then((res) => {
+      //   if (res.code === 200) {
+      //     this.menus = res.data;
+      //   }
+      // });
     },
   },
 };
@@ -122,18 +125,16 @@ export default {
 .el-menu-item {
   text-align: left;
 }
-.submenu {
-  text-align: center;
-}
+
 .aside::-webkit-scrollbar {
   display: none;
 }
 .el-submenu .el-menu-item {
   min-width: 180px;
+
 }
 .title {
   text-align: center;
   font-size: 1.3vw;
 }
-
 </style>

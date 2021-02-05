@@ -5,7 +5,6 @@
         :model="menuForm"
         :inline="true"
         ref="menuForm"
-        label-width="100px"
         class="demo-form-inline"
       >
         <el-form-item label="名称" prop="menuName">
@@ -170,11 +169,6 @@ export default {
 </script>
 
 <style scoped>
-.container-table {
-}
-.search-form {
-  float: left;
-}
 .add-form {
   margin-left: 20px;
   padding: 5px;
