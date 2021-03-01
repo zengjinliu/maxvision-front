@@ -1,5 +1,3 @@
-import { queryMenuByName } from "../request/sys/menu";
-
 export const api = {
   login: {//登陆模块
     doLogin: '/api/sys/login',//登陆

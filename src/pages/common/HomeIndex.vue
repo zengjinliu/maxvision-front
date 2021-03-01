@@ -8,7 +8,8 @@
 </template>
 
 <script>
-import ws from "@/api/common/websocket";
+import {sysConfig} from '@/api/common/sysconfig'
+
 
 export default {
   name: "HomeIndex",
@@ -18,8 +19,9 @@ export default {
     };
   },
   created() {
+    const url = 'ws://'+sysConfig.url + '/demo.ws';
     let config = {
-      url: "ws://127.0.0.1:8080/demo.ws",
+      url: url,
       onmessage: this.wsonmessage,
       onopen: this.wsonopen,
       onerror: this.wsonerror,

@@ -6,15 +6,17 @@ ajax请求函数封装模块
   返回值：promise对象(异步返回的数据是：response.data)
 */
 
-import axios from 'axios'
+import Axios from 'axios'
 import VueRouter from '../../router'
 import {MessageBox, Message } from 'element-ui'
 
 
 //请求地址
-export const url = 'http://localhost:8080';
-axios.defaults.withCredentials = true;
-
+const axios = Axios.create({
+  baseURL: process.env.BASE_URL,
+  withCredentials:true,
+  timeout: 3000
+});
 /**
  * 请求拦截
  */
@@ -28,6 +30,7 @@ axios.interceptors.request.use(config => {
  * 响应拦截
  */
 axios.interceptors.response.use(res => {
+  console.log(res);
   //返回错误码在请求头中
   const errorCode = res.headers.code
   if (errorCode) {

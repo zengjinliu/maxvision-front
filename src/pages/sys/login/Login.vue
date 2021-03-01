@@ -15,9 +15,9 @@
         <el-form-item prop="username">
           <el-input v-model="user.username" placeholder="用户名"></el-input>
         </el-form-item>
-        <el-form-item prop="pwd">
+        <el-form-item prop="password">
           <el-input
-            v-model="user.pwd"
+            v-model="user.password"
             type="password"
             placeholder="密码"
           ></el-input>
@@ -54,7 +54,6 @@ export default {
     return {
       user: {
         username: "",
-        pwd: "",
         password: "",
         rememberMe: false,
       },
@@ -76,11 +75,11 @@ export default {
     //获取记住我
     getCookie() {
       const username = Cookies.get("username");
-      const pwd = Cookies.get("pwd");
+      const password = Cookies.get("password");
       const rememberMe = Cookies.get("rememberMe");
       this.user = {
         username: username === undefined ? this.user.username : username,
-        pwd: pwd === undefined ? this.user.pwd : decrypt(pwd),
+        password: password === undefined ? this.user.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
       };
     },
@@ -92,15 +91,15 @@ export default {
           //记住密码功能
           if (this.user.rememberMe) {
             Cookies.set("username", this.user.username, { expires: 30 });
-            Cookies.set("pwd", encrypt(this.user.pwd), { expires: 30 });
+            Cookies.set("password", encrypt(this.user.password), { expires: 30 });
             Cookies.set("rememberMe", this.user.rememberMe, { expires: 30 });
           } else {
             Cookies.remove("username");
-            Cookies.remove("pwd");
+            Cookies.remove("password");
             Cookies.remove("rememberMe");
           }
           //对密码进行MD5加密
-          this.user.password = this.$md5(this.user.pwd);
+          this.user.password = this.$md5(this.user.password);
 
           doLogin(this.user)
             .then((res) => {

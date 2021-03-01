@@ -1,8 +1,9 @@
 (function(){
 
-
+	
 	var default_config = {
-			"url":"ws://127.0.0.1:8080/demo.ws",
+
+			"url": "ws://127.0.0.1:8081/demo.ws",
 			"onmessage":function(){
 				console.log("receive message success!");
 			},

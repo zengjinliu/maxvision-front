@@ -15,7 +15,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{//匹配所有已'api'开头的请求路径
-        target: 'http://localhost:8080',//代理目标的基础路径
+        target: 'http://localhost:8081',//代理目标的基础路径
         changeOrigin: true,//支持跨域
         pathRewrite:  {//重写路径，去掉路径中开头的/api
           '^/api':''
@@ -25,7 +25,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8081, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,//自动打开浏览器
     errorOverlay: true,
@@ -55,7 +55,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps
