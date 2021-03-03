@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {sysConfig} from '@/api/common/sysconfig'
+import {backUrl} from '@/api/common/ajax'
 
 
 export default {
@@ -19,7 +19,7 @@ export default {
     };
   },
   created() {
-    const url = 'ws://'+sysConfig.url + '/demo.ws';
+    const url = 'ws://'+backUrl+ '/demo.ws';
     let config = {
       url: url,
       onmessage: this.wsonmessage,
