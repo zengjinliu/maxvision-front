@@ -3,7 +3,7 @@
 	
 	var default_config = {
 
-			"url": "ws://127.0.0.1:8081/demo.ws",
+			"url": "ws://192.168.1.126:8080/demo.ws",
 			"onmessage":function(){
 				console.log("receive message success!");
 			},
@@ -79,14 +79,14 @@
 				},_this.heartTimeout)
 				
 			},
-			reconnect:function(){
+			reconnect:function(config){
 				var _this = this;
 				if(_this.isWindowClose) return;
 				if(_this.needReconnect) return;
 				_this.needReconnect = true;
 				setTimeout(function(){
 					console.log("reconnect_url: " + _this.config["url"]);
-					_this.init(_this.config);
+					_this.init(config);
 					_this.needReconnect = false;
 				},3000);
 			},

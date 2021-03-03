@@ -15,18 +15,19 @@ export default {
   data() {
     return {
       websocket: "",
+      url: 'ws://192.168.1.126:8080/demo.ws',
+      config:{}
     };
   },
   created() {
-    const url = 'ws://192.168.1.126/demo.ws';
-    let config = {
-      url: url,
+    this.config = {
+      url: this.url,
       onmessage: this.wsonmessage,
       onopen: this.wsonopen,
       onerror: this.wsonerror,
       onclose: this.wsonclose,
     };
-    this.$ws.init(config);
+    this.$ws.init(this.config);
     this.websocket = this.$ws.webSocket;
   },
   mounted() {},
@@ -49,7 +50,7 @@ export default {
     },
     //错误
     wsonerror(e) {
-      this.$ws.reconnect();
+      this.$ws.reconnect(this.config);
     },
     //发送数据
     wssend(msg) {
