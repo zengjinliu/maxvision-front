@@ -10,8 +10,6 @@ import Axios from 'axios'
 import VueRouter from '../../router'
 import {MessageBox, Message } from 'element-ui'
 
-//真正后台地址
-export const backUrl =process.env.BACK_URL
 
 //请求地址
 const axios = Axios.create({

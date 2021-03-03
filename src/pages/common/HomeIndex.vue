@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import {backUrl} from '@/api/common/ajax'
 
 
 export default {
@@ -19,7 +18,7 @@ export default {
     };
   },
   created() {
-    const url = 'ws://'+backUrl+ '/demo.ws';
+    const url = 'ws://192.168.1.126/demo.ws';
     let config = {
       url: url,
       onmessage: this.wsonmessage,
