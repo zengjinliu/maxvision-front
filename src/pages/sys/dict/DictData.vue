@@ -200,7 +200,6 @@ export default {
         : this.dictCodes.map((item) => {
             return item.dictCode;
           });
-      console.log(dictCodes);
       //删除单个用户
       this.$confirm("确定进行删除操作,是否继续？", "提示", {
         confirmButtonText: "确定",

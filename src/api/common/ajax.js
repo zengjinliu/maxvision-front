@@ -30,7 +30,6 @@ axios.interceptors.request.use(config => {
  * 响应拦截
  */
 axios.interceptors.response.use(res => {
-  console.log(res);
   //返回错误码在请求头中
   const errorCode = res.headers.code
   if (errorCode) {

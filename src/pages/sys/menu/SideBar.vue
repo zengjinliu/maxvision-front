@@ -53,7 +53,6 @@ export default {
     };
   },
   created() {
-    console.log('----------------->sidebar');
     //请求菜单
     this.requireItems();
   },
